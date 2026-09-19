@@ -23,17 +23,17 @@ export const exportToExcel = (data = [], summary = {}, filterInfo = {}) => {
       [],
       ['📋 INFORMASI LAPORAN', '', '', '', '📊 METRIK UTAMA KUNJUNGAN'],
       ['Periode Laporan', ':', filterInfo.periode || 'Semua Periode', '', 'Total Kunjungan Pasien', summary.totalKunjungan || 0, '100%'],
-      ['Filter Penjamin', ':', filterInfo.penjamin || 'Semua Penjamin', '', 'Pasien Baru (REQ-01)', summary.statusCounts?.Baru || 0, getPercent(summary.statusCounts?.Baru || 0, total)],
-      ['Tanggal Cetak', ':', new Date().toLocaleDateString('id-ID'), '', 'Pasien Lama (REQ-03)', summary.statusCounts?.Lama || 0, getPercent(summary.statusCounts?.Lama || 0, total)],
+      ['Filter Penjamin', ':', filterInfo.penjamin || 'Semua Penjamin', '', 'Pasien Baru', summary.statusCounts?.Baru || 0, getPercent(summary.statusCounts?.Baru || 0, total)],
+      ['Tanggal Cetak', ':', new Date().toLocaleDateString('id-ID'), '', 'Pasien Lama', summary.statusCounts?.Lama || 0, getPercent(summary.statusCounts?.Lama || 0, total)],
       [],
       ['---------------------------------------------------------------------------------------------------------'],
       [],
-      ['💳 REKAPITULASI PENJAMIN (REQ-06)', '', '', '', '👶 REKAPITULASI KELOMPOK USIA (REQ-08)'],
+      ['💳 REKAPITULASI PENJAMIN', '', '', '', '👶 REKAPITULASI KELOMPOK USIA'],
       ['Kategori Penjamin', 'Jumlah Pasien', 'Persentase', '', 'Rentang Usia Klinik', 'Jumlah Pasien', 'Persentase'],
       ['Penjamin BPJS / JKN', summary.penjaminCounts?.['BPJS/JKN'] || 0, getPercent(summary.penjaminCounts?.['BPJS/JKN'] || 0, total), '', '0 – 7 Hari', summary.ageGroupCounts?.['0–7 hr'] || 0, getPercent(summary.ageGroupCounts?.['0–7 hr'] || 0, total)],
       ['Penjamin Umum', summary.penjaminCounts?.Umum || 0, getPercent(summary.penjaminCounts?.Umum || 0, total), '', '8 – 20 Hari', summary.ageGroupCounts?.['8–20 hr'] || 0, getPercent(summary.ageGroupCounts?.['8–20 hr'] || 0, total)],
       ['', '', '', '', '1 – 11 Bulan', summary.ageGroupCounts?.['1–11 bln'] || 0, getPercent(summary.ageGroupCounts?.['1–11 bln'] || 0, total)],
-      ['👥 DEMOGRAFI JENIS KELAMIN (REQ-07)', '', '', '', '1 – 4 Tahun', summary.ageGroupCounts?.['1–4 th'] || 0, getPercent(summary.ageGroupCounts?.['1–4 th'] || 0, total)],
+      ['👥 DEMOGRAFI JENIS KELAMIN', '', '', '', '1 – 4 Tahun', summary.ageGroupCounts?.['1–4 th'] || 0, getPercent(summary.ageGroupCounts?.['1–4 th'] || 0, total)],
       ['Jenis Kelamin', 'Jumlah Pasien', 'Persentase', '', '5 – 9 Tahun', summary.ageGroupCounts?.['5–9 th'] || 0, getPercent(summary.ageGroupCounts?.['5–9 th'] || 0, total)],
       ['Laki-Laki (L)', summary.genderCounts?.L || 0, getPercent(summary.genderCounts?.L || 0, total), '', '10 – 14 Tahun', summary.ageGroupCounts?.['10–14 th'] || 0, getPercent(summary.ageGroupCounts?.['10–14 th'] || 0, total)],
       ['Perempuan (P)', summary.genderCounts?.P || 0, getPercent(summary.genderCounts?.P || 0, total), '', '15 – 19 Tahun', summary.ageGroupCounts?.['15–19 th'] || 0, getPercent(summary.ageGroupCounts?.['15–19 th'] || 0, total)],
@@ -179,7 +179,7 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
     doc.setFontSize(9);
     doc.setFont('Helvetica', 'normal');
     doc.setTextColor(80, 80, 80);
-    doc.text('Jl. Jati Asih No. 88, Bekasi | Telp: (021) 8240-1234 | Email: info@jatiasihmedika.com', centerX, 25, { align: 'center' });
+    doc.text('Jl. Semolowaru Utara V No.2A, Semolowaru, Kec. Sukolilo, Surabaya, Jawa Timur 60119 | Telp: 0812-3235-6932 | Email: info@jatiasihmedika.com', centerX, 25, { align: 'center' });
     doc.setLineWidth(0.5);
     doc.setDrawColor(2, 132, 199);
     doc.line(14, 28, 283, 28);
@@ -222,7 +222,7 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(67, 56, 202);
-    doc.text('STATUS PASIEN (REQ-03)', 18 + cardWidth + gap, cardY + 5);
+    doc.text('STATUS PASIEN', 18 + cardWidth + gap, cardY + 5);
     doc.setFontSize(10);
     doc.text(`Baru: ${summary.statusCounts?.Baru || 0}   |   Lama: ${summary.statusCounts?.Lama || 0}`, 18 + cardWidth + gap, cardY + 12);
     doc.setFontSize(7);
@@ -236,21 +236,21 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(4, 120, 87);
-    doc.text('PENJAMIN PASIEN (REQ-06)', 18 + (cardWidth + gap) * 2, cardY + 5);
+    doc.text('PENJAMIN PASIEN', 18 + (cardWidth + gap) * 2, cardY + 5);
     doc.setFontSize(10);
     doc.text(`BPJS: ${summary.penjaminCounts?.['BPJS/JKN'] || 0}   |   Umum: ${summary.penjaminCounts?.Umum || 0}`, 18 + (cardWidth + gap) * 2, cardY + 12);
     doc.setFontSize(7);
     doc.setFont('Helvetica', 'normal');
     doc.text(`BPJS / JKN: ${getPercent(summary.penjaminCounts?.['BPJS/JKN'] || 0, total)}`, 18 + (cardWidth + gap) * 2, cardY + 17);
 
-    // Card 4: Demografi Gender (REQ-07)
+    // Card 4: Demografi Gender
     doc.setFillColor(253, 242, 248);
     doc.setDrawColor(251, 207, 232);
     doc.roundedRect(14 + (cardWidth + gap) * 3, cardY, cardWidth, cardHeight, 2, 2, 'FD');
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(190, 24, 93);
-    doc.text('DEMOGRAFI GENDER (REQ-07)', 18 + (cardWidth + gap) * 3, cardY + 5);
+    doc.text('DEMOGRAFI GENDER', 18 + (cardWidth + gap) * 3, cardY + 5);
     doc.setFontSize(10);
     doc.text(`Laki: ${summary.genderCounts?.L || 0}   |   Perempuan: ${summary.genderCounts?.P || 0}`, 18 + (cardWidth + gap) * 3, cardY + 12);
     doc.setFontSize(7);
@@ -260,12 +260,12 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
     // TABLE 1: REKAPITULASI PENJAMIN & DEMOGRAFI GENDER (Left Side Page 1)
     const tableStartY = cardY + 24;
     const penjaminGenderData = [
-      ['Pasien Baru (REQ-01)', summary.statusCounts?.Baru || 0, getPercent(summary.statusCounts?.Baru || 0, total)],
-      ['Pasien Lama (REQ-03)', summary.statusCounts?.Lama || 0, getPercent(summary.statusCounts?.Lama || 0, total)],
-      ['Penjamin BPJS / JKN (REQ-06)', summary.penjaminCounts?.['BPJS/JKN'] || 0, getPercent(summary.penjaminCounts?.['BPJS/JKN'] || 0, total)],
-      ['Penjamin Umum (REQ-06)', summary.penjaminCounts?.Umum || 0, getPercent(summary.penjaminCounts?.Umum || 0, total)],
-      ['Gender Laki-Laki (L) (REQ-07)', summary.genderCounts?.L || 0, getPercent(summary.genderCounts?.L || 0, total)],
-      ['Gender Perempuan (P) (REQ-07)', summary.genderCounts?.P || 0, getPercent(summary.genderCounts?.P || 0, total)]
+      ['Pasien Baru', summary.statusCounts?.Baru || 0, getPercent(summary.statusCounts?.Baru || 0, total)],
+      ['Pasien Lama', summary.statusCounts?.Lama || 0, getPercent(summary.statusCounts?.Lama || 0, total)],
+      ['Penjamin BPJS / JKN', summary.penjaminCounts?.['BPJS/JKN'] || 0, getPercent(summary.penjaminCounts?.['BPJS/JKN'] || 0, total)],
+      ['Penjamin Umum', summary.penjaminCounts?.Umum || 0, getPercent(summary.penjaminCounts?.Umum || 0, total)],
+      ['Gender Laki-Laki (L)', summary.genderCounts?.L || 0, getPercent(summary.genderCounts?.L || 0, total)],
+      ['Gender Perempuan (P)', summary.genderCounts?.P || 0, getPercent(summary.genderCounts?.P || 0, total)]
     ];
 
     runAutoTable({
@@ -295,7 +295,7 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
     runAutoTable({
       startY: tableStartY,
       margin: { left: 153, right: 14 },
-      head: [['Kelompok Rentang Usia (REQ-08)', 'Jumlah', '% Persentase']],
+      head: [['Kelompok Rentang Usia', 'Jumlah', '% Persentase']],
       body: ageGroupData,
       styles: { fontSize: 8, cellPadding: 2 },
       headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },

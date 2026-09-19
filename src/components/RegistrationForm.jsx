@@ -12,7 +12,7 @@ export default function RegistrationForm({ onSuccess }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPasien, setSelectedPasien] = useState(null);
 
-  // Form Pasien Baru (REQ-01)
+  // Form Pasien Baru
   const [pasienBaruForm, setPasienBaruForm] = useState({
     nama: '',
     nik: '',
@@ -24,7 +24,7 @@ export default function RegistrationForm({ onSuccess }) {
     custom_no_rm: ''
   });
 
-  // Form Data Kunjungan (REQ-02)
+  // Form Data Kunjungan
   const [kunjunganForm, setKunjunganForm] = useState({
     tanggal_kunjungan: new Date().toISOString().split('T')[0],
     waktu_kunjungan: new Date().toTimeString().split(' ')[0].substring(0, 5),
@@ -88,7 +88,7 @@ export default function RegistrationForm({ onSuccess }) {
       let targetPasienId = null;
 
       if (isPasienBaru) {
-        // Step 1: Input Pasien Baru (REQ-01)
+        // Step 1: Input Pasien Baru
         if (!pasienBaruForm.nama || !pasienBaruForm.tanggal_lahir) {
           setAlertMsg({ type: 'error', text: 'Nama Pasien dan Tanggal Lahir wajib diisi.' });
           setLoading(false);
@@ -119,7 +119,7 @@ export default function RegistrationForm({ onSuccess }) {
         targetPasienId = selectedPasien.id;
       }
 
-      // Step 2: Input Data Kunjungan (REQ-02 & REQ-03)
+      // Step 2: Input Data Kunjungan
       const visitPayload = {
         ...kunjunganForm,
         pasien_id: targetPasienId,
@@ -189,7 +189,7 @@ export default function RegistrationForm({ onSuccess }) {
                 : 'text-slate-500 hover:text-sky-700'
             }`}
           >
-            + Pasien Baru (REQ-01)
+            + Pasien Baru
           </button>
           <button
             type="button"
@@ -200,7 +200,7 @@ export default function RegistrationForm({ onSuccess }) {
                 : 'text-slate-500 hover:text-sky-700'
             }`}
           >
-            Cari Pasien Lama (REQ-03)
+            Cari Pasien Lama
           </button>
         </div>
       </div>
@@ -372,7 +372,7 @@ export default function RegistrationForm({ onSuccess }) {
           )}
         </div>
 
-        {/* SECTION 2: DATA KUNJUNGAN (REQ-02) */}
+        {/* SECTION 2: DATA KUNJUNGAN */}
         <div className="bg-white p-7 rounded-3xl border border-sky-100 shadow-sm space-y-5">
           <div className="flex items-center justify-between border-b border-sky-100/70 pb-3.5">
             <h3 className="text-base font-extrabold text-slate-800 flex items-center space-x-2.5">
@@ -381,7 +381,7 @@ export default function RegistrationForm({ onSuccess }) {
               </div>
               <span>2. Data Kunjungan & Poli Tujuan</span>
             </h3>
-            <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">REQ-02</span>
+            <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700"></span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -445,7 +445,7 @@ export default function RegistrationForm({ onSuccess }) {
               </select>
             </div>
 
-            {/* Penjamin (REQ-06) */}
+            {/* Penjamin */}
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-700 mb-1.5">Jenis Penjamin / Pembayaran <span className="text-rose-500">*</span></label>
               <select
@@ -454,8 +454,8 @@ export default function RegistrationForm({ onSuccess }) {
                 onChange={(e) => setKunjunganForm({ ...kunjunganForm, penjamin: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all font-semibold text-slate-800"
               >
-                <option value="BPJS/JKN">BPJS / JKN (REQ-06)</option>
-                <option value="Umum">Umum (REQ-06)</option>
+                <option value="BPJS/JKN">BPJS / JKN</option>
+                <option value="Umum">Umum</option>
               </select>
             </div>
 

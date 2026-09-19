@@ -136,7 +136,7 @@ export default function VisitList() {
                 Data & Riwayat Kunjungan Pasien
               </h2>
               <p className="text-xs text-sky-600 font-medium mt-0.5">
-                Pencarian, filter penjamin/status, dan perbaikan data kunjungan (REQ-04).
+                Pencarian, filter penjamin/status, dan perbaikan data kunjungan.
               </p>
             </div>
           </div>
@@ -175,7 +175,7 @@ export default function VisitList() {
             onChange={(e) => setPenjaminFilter(e.target.value)}
             className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
           >
-            <option value="">Semua Penjamin (REQ-06)</option>
+            <option value="">Semua Penjamin</option>
             <option value="BPJS/JKN">BPJS / JKN</option>
             <option value="Umum">Umum</option>
           </select>
@@ -185,7 +185,7 @@ export default function VisitList() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
           >
-            <option value="">Semua Status Pasien (REQ-03)</option>
+            <option value="">Semua Status Pasien</option>
             <option value="Baru">Pasien Baru</option>
             <option value="Lama">Pasien Lama</option>
           </select>
@@ -210,7 +210,7 @@ export default function VisitList() {
                   <th className="px-4 py-4 text-left">Poli & Dokter</th>
                   <th className="px-4 py-4 text-center">Penjamin</th>
                   <th className="px-4 py-4 text-left">Tindakan</th>
-                  <th className="px-4 py-4 text-center">Aksi (REQ-04)</th>
+                  <th className="px-4 py-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sky-50">
@@ -264,7 +264,7 @@ export default function VisitList() {
                       <div className="flex items-center justify-center space-x-2">
                         <button
                           onClick={() => handleEditClick(v)}
-                          title="Perbaiki Data Kunjungan (REQ-04)"
+                          title="Perbaiki Data Kunjungan"
                           className="px-2.5 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl hover:bg-amber-100 transition flex items-center space-x-1 font-bold active:scale-95"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -298,7 +298,7 @@ export default function VisitList() {
               <div>
                 <h3 className="font-extrabold text-slate-800 text-base flex items-center space-x-2">
                   <Edit3 className="w-5 h-5 text-amber-500" />
-                  <span>Perbaiki Data Kunjungan (REQ-04)</span>
+                  <span>Perbaiki Data Kunjungan</span>
                 </h3>
                 <p className="text-xs text-sky-600 font-mono mt-0.5">{editingVisit.no_registrasi} • RM: {editingVisit.no_rm}</p>
               </div>
@@ -346,7 +346,7 @@ export default function VisitList() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Status Pasien (REQ-03)</label>
+                  <label className="block font-bold text-slate-700 mb-1">Status Pasien</label>
                   <select
                     value={editForm.status_pasien}
                     onChange={(e) => setEditForm({ ...editForm, status_pasien: e.target.value })}
@@ -358,7 +358,7 @@ export default function VisitList() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Penjamin (REQ-06)</label>
+                  <label className="block font-bold text-slate-700 mb-1">Penjamin</label>
                   <select
                     value={editForm.penjamin}
                     onChange={(e) => setEditForm({ ...editForm, penjamin: e.target.value })}

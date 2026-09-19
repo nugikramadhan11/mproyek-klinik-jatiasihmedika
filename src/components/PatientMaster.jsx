@@ -253,19 +253,7 @@ export default function PatientMaster({ onSelectPasien }) {
             </div>
 
             {/* Modal Actions */}
-            <div className="pt-3 border-t border-sky-100 flex flex-col sm:flex-row items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  const p = selectedPatientForDetail;
-                  setSelectedPatientForDetail(null);
-                  if (onSelectPasien) onSelectPasien(p);
-                }}
-                className="w-full sm:w-auto px-4 py-2.5 bg-sky-50 text-sky-700 font-extrabold rounded-xl hover:bg-sky-100 border border-sky-200 transition text-xs flex items-center justify-center space-x-1.5"
-              >
-                <span>+ Buat Kunjungan Baru Pasien Ini</span>
-              </button>
-
+            <div className="pt-3 border-t border-sky-100 flex justify-end">
               <button
                 type="button"
                 onClick={() => setSelectedPatientForDetail(null)}

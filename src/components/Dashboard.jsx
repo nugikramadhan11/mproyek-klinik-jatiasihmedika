@@ -118,7 +118,7 @@ export default function Dashboard({ setActiveTab }) {
     labels: ['Pasien Baru', 'Pasien Lama'],
     datasets: [{
       data: [data.statusCounts?.Baru || 0, data.statusCounts?.Lama || 0],
-      backgroundColor: ['#0284c7', '#38bdf8'],
+      backgroundColor: ['#1d4ed8', '#93c5fd'],
       hoverOffset: 6,
       borderWidth: 0
     }]
@@ -162,13 +162,20 @@ export default function Dashboard({ setActiveTab }) {
     }]
   };
 
+  const poliColors = ['#0284c7', '#06b6d4', '#10b981', '#6366f1', '#8b5cf6', '#f59e0b'];
+  const poliChartEntries = Object.entries(data.poliCounts || {}).map(([label, value], index) => ({
+    label,
+    value,
+    color: poliColors[index % poliColors.length]
+  }));
+
   const poliChartData = {
-    labels: Object.keys(data.poliCounts || {}),
+    labels: poliChartEntries.map(item => item.label),
     datasets: [{
       label: 'Jumlah Kunjungan',
-      data: Object.values(data.poliCounts || {}),
-      backgroundColor: ['#0284c7', '#06b6d4', '#10b981', '#6366f1', '#8b5cf6', '#f59e0b'],
-      hoverBackgroundColor: ['#0369a1', '#0891b2', '#059669', '#4f46e5', '#7c3aed', '#d97706'],
+      data: poliChartEntries.map(item => item.value),
+      backgroundColor: poliChartEntries.map(item => item.color),
+      hoverBackgroundColor: poliChartEntries.map(item => item.color),
       borderRadius: 8,
       maxBarThickness: 42
     }]
@@ -272,7 +279,7 @@ export default function Dashboard({ setActiveTab }) {
               <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600">
                 <PieIcon className="w-4 h-4" />
               </div>
-              <span>Pasien Baru vs Lama</span>
+              <span>Pasien Baru dan Lama</span>
             </h3>
             <span className="text-xs font-bold bg-sky-50 text-sky-700 px-2.5 py-1 rounded-full border border-sky-100">Status Pasien</span>
           </div>
@@ -377,6 +384,21 @@ export default function Dashboard({ setActiveTab }) {
           </div>
           <div className="h-64">
             <Bar data={poliChartData} options={barOptions} />
+          </div>
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Keterangan Poli</span>
+              <span className="text-[10px] text-slate-500">Jumlah kunjungan</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {poliChartEntries.map((item) => (
+                <div key={item.label} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></span>
+                  <span className="text-[11px] font-semibold text-slate-700 truncate">{item.label}</span>
+                  <span className="ml-auto text-[11px] font-black text-slate-800">{item.value}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

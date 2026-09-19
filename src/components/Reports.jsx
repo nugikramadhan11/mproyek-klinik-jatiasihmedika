@@ -59,8 +59,8 @@ export default function Reports() {
   const { summary = {}, detail = [] } = data;
 
   const filterInfo = {
-    periode: startDate && endDate ? `${startDate} s/d ${endDate}` : (startDate ? `Sejak ${startDate}` : 'Semua Periode (REQ-05)'),
-    penjamin: penjaminFilter || 'Semua Penjamin (Umum & BPJS - REQ-06)'
+    periode: startDate && endDate ? `${startDate} s/d ${endDate}` : (startDate ? `Sejak ${startDate}` : 'Semua Periode'),
+    penjamin: penjaminFilter || 'Semua Penjamin (Umum & BPJS'
   };
 
   const handleExportExcel = () => {
@@ -149,7 +149,7 @@ export default function Reports() {
           
           {/* Tanggal Awal */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">Periode Tanggal Awal (REQ-05)</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">Periode Tanggal Awal</label>
             <input
               type="date"
               value={startDate}
@@ -160,7 +160,7 @@ export default function Reports() {
 
           {/* Tanggal Akhir */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">Periode Tanggal Akhir (REQ-05)</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">Periode Tanggal Akhir</label>
             <input
               type="date"
               value={endDate}
@@ -171,7 +171,7 @@ export default function Reports() {
 
           {/* Filter Penjamin (REQ-06) */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">Filter Penjamin (REQ-06)</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">Filter Penjamin</label>
             <select
               value={penjaminFilter}
               onChange={(e) => setPenjaminFilter(e.target.value)}
@@ -198,7 +198,7 @@ export default function Reports() {
 
         {/* Penjamin Breakdown */}
         <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Penjamin (REQ-06)</p>
+          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Penjamin</p>
           <div className="flex justify-between items-baseline mt-1">
             <div>
               <span className="text-2xl font-black text-indigo-600">{summary.penjaminCounts?.['BPJS/JKN'] || 0}</span>
@@ -213,7 +213,7 @@ export default function Reports() {
 
         {/* Gender Breakdown (REQ-07) */}
         <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Gender (REQ-07)</p>
+          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Gender</p>
           <div className="flex justify-between items-baseline mt-1">
             <div>
               <span className="text-2xl font-black text-sky-600">{summary.genderCounts?.L || 0}</span>
@@ -249,10 +249,10 @@ export default function Reports() {
                   <th className="px-4 py-4 text-center">No. RM</th>
                   <th className="px-4 py-4 text-left">Nama Pasien</th>
                   <th className="px-4 py-4 text-center">Status</th>
-                  <th className="px-4 py-4 text-center">Gender (REQ-07)</th>
-                  <th className="px-4 py-4 text-center">Usia & Kategori (REQ-08)</th>
+                  <th className="px-4 py-4 text-center">Gender</th>
+                  <th className="px-4 py-4 text-center">Usia & Kategori</th>
                   <th className="px-4 py-4 text-left">Poli / Dokter</th>
-                  <th className="px-4 py-4 text-center">Penjamin (REQ-06)</th>
+                  <th className="px-4 py-4 text-center">Penjamin</th>
                   <th className="px-4 py-4 text-left">Tindakan Medis</th>
                 </tr>
               </thead>
