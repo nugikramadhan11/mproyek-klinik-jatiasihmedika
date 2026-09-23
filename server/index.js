@@ -208,8 +208,7 @@ app.get('/api/pasien', async (req, res) => {
       result = result.filter(p =>
         (p.nama && p.nama.toLowerCase().includes(q)) ||
         (p.no_rm && p.no_rm.toLowerCase().includes(q)) ||
-        (p.nik && p.nik.includes(q)) ||
-        (p.no_hp && p.no_hp.includes(q))
+        (p.nik && p.nik.includes(q))
       );
     }
 
@@ -222,14 +221,14 @@ app.get('/api/pasien', async (req, res) => {
 // POST Pasien Baru (REQ-01)
 app.post('/api/pasien', async (req, res) => {
   try {
-    const { nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin, alamat, no_hp, custom_no_rm } = req.body;
+    const { nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin } = req.body;
 
     if (!nama || !tanggal_lahir || !jenis_kelamin) {
       return res.status(400).json({ success: false, message: 'Nama, Tanggal Lahir, dan Jenis Kelamin wajib diisi.' });
     }
 
     const db = await getDb();
-    const no_rm = custom_no_rm ? custom_no_rm.trim() : await generateNoRM(db);
+    const no_rm = await generateNoRM(db);
 
     // Cek Unik No. RM
     if (db.pasien.some(p => p.no_rm.toLowerCase() === no_rm.toLowerCase())) {
@@ -241,7 +240,7 @@ app.post('/api/pasien', async (req, res) => {
     if (isMysqlConnected() && pool) {
       const [resInsert] = await pool.query(
         'INSERT INTO pasien (no_rm, nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin, alamat, no_hp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [no_rm, nama, nik || '', no_bpjs || '', tanggal_lahir, jenis_kelamin, alamat || '', no_hp || '']
+        [no_rm, nama, nik || '', no_bpjs || '', tanggal_lahir, jenis_kelamin, '', '']
       );
       newPasien = {
         id: resInsert.insertId,
@@ -251,8 +250,8 @@ app.post('/api/pasien', async (req, res) => {
         no_bpjs: no_bpjs || '',
         tanggal_lahir,
         jenis_kelamin,
-        alamat: alamat || '',
-        no_hp: no_hp || ''
+        alamat: '',
+        no_hp: ''
       };
     } else {
       const maxId = db.pasien.reduce((max, p) => (p.id > max ? p.id : max), 0);
@@ -264,8 +263,8 @@ app.post('/api/pasien', async (req, res) => {
         no_bpjs: no_bpjs || '',
         tanggal_lahir,
         jenis_kelamin,
-        alamat: alamat || '',
-        no_hp: no_hp || '',
+        alamat: '',
+        no_hp: '',
         created_at: new Date().toISOString()
       };
       db.pasien.push(newPasien);
@@ -342,7 +341,7 @@ app.get('/api/kunjungan', async (req, res) => {
 // POST Tambah Kunjungan (REQ-02 & REQ-03 Pasien Baru dan Lama)
 app.post('/api/kunjungan', async (req, res) => {
   try {
-    const { pasien_id, tanggal_kunjungan, waktu_kunjungan, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan } = req.body;
+    const { pasien_id, tanggal_kunjungan, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan } = req.body;
 
     if (!pasien_id || !poli_id || !dokter_id || !penjamin) {
       return res.status(400).json({ success: false, message: 'Pasien, Poli, Dokter, dan Penjamin wajib diisi.' });
@@ -352,7 +351,7 @@ app.post('/api/kunjungan', async (req, res) => {
     const pid = Number(pasien_id);
 
     const tgl = tanggal_kunjungan || new Date().toISOString().split('T')[0];
-    const wkt = waktu_kunjungan || new Date().toTimeString().split(' ')[0].substring(0, 5);
+    const wkt = new Date().toTimeString().split(' ')[0].substring(0, 5);
 
     // REQ-03: Cek apakah pasien sudah punya kunjungan sebelumnya
     const priorVisitsCount = db.kunjungan.filter(k => Number(k.pasien_id) === pid).length;

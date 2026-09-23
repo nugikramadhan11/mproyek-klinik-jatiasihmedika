@@ -18,16 +18,12 @@ export default function RegistrationForm({ onSuccess }) {
     nik: '',
     no_bpjs: '',
     tanggal_lahir: '',
-    jenis_kelamin: 'L',
-    alamat: '',
-    no_hp: '',
-    custom_no_rm: ''
+    jenis_kelamin: 'L'
   });
 
   // Form Data Kunjungan
   const [kunjunganForm, setKunjunganForm] = useState({
     tanggal_kunjungan: new Date().toISOString().split('T')[0],
-    waktu_kunjungan: new Date().toTimeString().split(' ')[0].substring(0, 5),
     poli_id: '',
     dokter_id: '',
     penjamin: 'BPJS/JKN',
@@ -121,9 +117,14 @@ export default function RegistrationForm({ onSuccess }) {
 
       // Step 2: Input Data Kunjungan
       const visitPayload = {
-        ...kunjunganForm,
+        tanggal_kunjungan: kunjunganForm.tanggal_kunjungan,
+        poli_id: kunjunganForm.poli_id,
+        dokter_id: kunjunganForm.dokter_id,
+        penjamin: kunjunganForm.penjamin,
         pasien_id: targetPasienId,
-        no_kartu_penjamin: kunjunganForm.penjamin === 'BPJS/JKN' ? (kunjunganForm.no_kartu_penjamin || (selectedPasien?.no_bpjs || pasienBaruForm.no_bpjs)) : ''
+        no_kartu_penjamin: kunjunganForm.penjamin === 'BPJS/JKN' ? (kunjunganForm.no_kartu_penjamin || (selectedPasien?.no_bpjs || pasienBaruForm.no_bpjs)) : '',
+        tindakan: kunjunganForm.tindakan,
+        catatan: kunjunganForm.catatan
       };
 
       const visitRes = await fetch('/api/kunjungan', {
@@ -143,7 +144,7 @@ export default function RegistrationForm({ onSuccess }) {
 
         // Reset form
         setPasienBaruForm({
-          nama: '', nik: '', no_bpjs: '', tanggal_lahir: '', jenis_kelamin: 'L', alamat: '', no_hp: '', custom_no_rm: ''
+          nama: '', nik: '', no_bpjs: '', tanggal_lahir: '', jenis_kelamin: 'L'
         });
         setSelectedPasien(null);
         setSearchQuery('');
@@ -250,19 +251,6 @@ export default function RegistrationForm({ onSuccess }) {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  No. Rekam Medis (Opsional / Custom)
-                </label>
-                <input
-                  type="text"
-                  placeholder="Biarkan kosong untuk Auto RM (RM-2026-XXXX)"
-                  value={pasienBaruForm.custom_no_rm}
-                  onChange={(e) => setPasienBaruForm({ ...pasienBaruForm, custom_no_rm: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none bg-sky-50/30 transition-all font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Tanggal Lahir <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -286,28 +274,6 @@ export default function RegistrationForm({ onSuccess }) {
                   <option value="L">Laki-Laki (L)</option>
                   <option value="P">Perempuan (P)</option>
                 </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">No. Telepon / WhatsApp</label>
-                <input
-                  type="text"
-                  placeholder="0812xxxxxxxx"
-                  value={pasienBaruForm.no_hp}
-                  onChange={(e) => setPasienBaruForm({ ...pasienBaruForm, no_hp: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">Alamat Tempat Tinggal</label>
-                <input
-                  type="text"
-                  placeholder="Jl. Jati Asih No..."
-                  value={pasienBaruForm.alamat}
-                  onChange={(e) => setPasienBaruForm({ ...pasienBaruForm, alamat: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
-                />
               </div>
             </div>
           ) : (
@@ -396,20 +362,6 @@ export default function RegistrationForm({ onSuccess }) {
                   required
                   value={kunjunganForm.tanggal_kunjungan}
                   onChange={(e) => setKunjunganForm({ ...kunjunganForm, tanggal_kunjungan: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">Waktu Kunjungan</label>
-              <div className="relative">
-                <Clock className="w-4 h-4 text-sky-500 absolute left-3.5 top-3" />
-                <input
-                  type="time"
-                  required
-                  value={kunjunganForm.waktu_kunjungan}
-                  onChange={(e) => setKunjunganForm({ ...kunjunganForm, waktu_kunjungan: e.target.value })}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
                 />
               </div>
