@@ -246,7 +246,6 @@ export default function Reports() {
                 <tr>
                   <th className="px-4 py-4 text-center">No</th>
                   <th className="px-4 py-4 text-center">No. Reg / Tgl</th>
-                  <th className="px-4 py-4 text-center">No. RM</th>
                   <th className="px-4 py-4 text-left">Nama Pasien</th>
                   <th className="px-4 py-4 text-center">Status</th>
                   <th className="px-4 py-4 text-center">Gender</th>
@@ -264,7 +263,6 @@ export default function Reports() {
                       <span className="font-bold text-slate-800">{item.no_registrasi}</span>
                       <p className="text-slate-400 text-[11px]">{item.tanggal_kunjungan}</p>
                     </td>
-                    <td className="px-4 py-3.5 font-mono font-bold text-sky-700 text-center">{item.no_rm}</td>
                     <td className="px-4 py-3.5 font-extrabold text-sky-700 text-left whitespace-nowrap">{item.nama_pasien}</td>
                     <td className="px-4 py-3.5 whitespace-nowrap text-center">
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-extrabold whitespace-nowrap shadow-xs ${

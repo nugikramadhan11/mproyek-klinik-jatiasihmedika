@@ -70,7 +70,6 @@ export default function VisitList() {
     setEditForm({
       nama_pasien: visit.nama_pasien || '',
       tanggal_kunjungan: visit.tanggal_kunjungan,
-      waktu_kunjungan: visit.waktu_kunjungan,
       poli_id: visit.poli_id,
       dokter_id: visit.dokter_id,
       penjamin: visit.penjamin,
@@ -152,7 +151,7 @@ export default function VisitList() {
             <Search className="w-4 h-4 text-sky-500 absolute left-3.5 top-3" />
             <input
               type="text"
-              placeholder="Cari Nama Pasien, No. RM, Reg..."
+              placeholder="Cari Nama Pasien, Reg..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
@@ -204,7 +203,7 @@ export default function VisitList() {
               <thead className="bg-sky-50/80 border-b border-sky-100 text-sky-900 font-extrabold uppercase tracking-wider">
                 <tr>
                   <th className="px-4 py-4 text-center">No. Reg / Tgl</th>
-                  <th className="px-4 py-4 text-left">Pasien & No. RM</th>
+                  <th className="px-4 py-4 text-left">Pasien</th>
                   <th className="px-4 py-4 text-center">Status</th>
                   <th className="px-4 py-4 text-center">Gender / Usia</th>
                   <th className="px-4 py-4 text-left">Poli & Dokter</th>
@@ -219,12 +218,11 @@ export default function VisitList() {
                     
                     <td className="px-4 py-3.5 font-mono text-center">
                       <span className="font-bold text-slate-800">{v.no_registrasi}</span>
-                      <p className="text-slate-400 text-[11px]">{v.tanggal_kunjungan} ({v.waktu_kunjungan})</p>
+                      <p className="text-slate-400 text-[11px]">{v.tanggal_kunjungan}</p>
                     </td>
 
                     <td className="px-4 py-3.5 text-left">
                       <span className="font-extrabold text-sky-700 text-sm">{v.nama_pasien}</span>
-                      <p className="text-slate-500 font-mono text-[11px]">{v.no_rm}</p>
                     </td>
 
                     <td className="px-4 py-3.5 whitespace-nowrap text-center">
@@ -300,7 +298,7 @@ export default function VisitList() {
                   <Edit3 className="w-5 h-5 text-amber-500" />
                   <span>Perbaiki Data Kunjungan</span>
                 </h3>
-                <p className="text-xs text-sky-600 font-mono mt-0.5">{editingVisit.no_registrasi} • RM: {editingVisit.no_rm}</p>
+                <p className="text-xs text-sky-600 font-mono mt-0.5">{editingVisit.no_registrasi}</p>
               </div>
               <button
                 onClick={() => setEditingVisit(null)}
@@ -323,25 +321,14 @@ export default function VisitList() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Tanggal Kunjungan</label>
-                  <input
-                    type="date"
-                    value={editForm.tanggal_kunjungan}
-                    onChange={(e) => setEditForm({ ...editForm, tanggal_kunjungan: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Waktu</label>
-                  <input
-                    type="time"
-                    value={editForm.waktu_kunjungan}
-                    onChange={(e) => setEditForm({ ...editForm, waktu_kunjungan: e.target.value })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Tanggal Kunjungan</label>
+                <input
+                  type="date"
+                  value={editForm.tanggal_kunjungan}
+                  onChange={(e) => setEditForm({ ...editForm, tanggal_kunjungan: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">

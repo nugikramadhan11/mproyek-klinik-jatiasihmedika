@@ -82,7 +82,7 @@ export default function PatientMaster({ onSelectPasien }) {
           <Search className="w-4 h-4 text-sky-500 absolute left-3.5 top-3" />
           <input
             type="text"
-            placeholder="Cari Nama Pasien, No. RM, NIK..."
+            placeholder="Cari Nama Pasien, NIK..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
@@ -106,9 +106,6 @@ export default function PatientMaster({ onSelectPasien }) {
                 <div className="flex items-start justify-between border-b border-sky-100/70 pb-3 gap-2">
                   <div className="min-w-0 flex-1">
                     <h3 className="font-extrabold text-slate-800 text-base group-hover:text-sky-700 transition-colors leading-snug">{p.nama}</h3>
-                    <span className="text-xs font-mono font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-md border border-sky-100 mt-1 inline-block">
-                      {p.no_rm}
-                    </span>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold whitespace-nowrap inline-flex items-center shrink-0 ${
                     p.jenis_kelamin === 'L' ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-rose-50 text-rose-600 border border-rose-200'
@@ -121,14 +118,6 @@ export default function PatientMaster({ onSelectPasien }) {
                   <div className="flex items-center space-x-2">
                     <Calendar className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>Tgl Lahir: <strong className="text-slate-800">{p.tanggal_lahir}</strong> ({getAge(p.tanggal_lahir)} th)</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Phone className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span>HP: <strong className="text-slate-800">{p.no_hp || '-'}</strong></span>
-                  </div>
-                  <div className="flex items-start space-x-2 pt-0.5">
-                    <MapPin className="w-4 h-4 text-sky-500 shrink-0 mt-0.5" />
-                    <span className="line-clamp-2 text-slate-500">{p.alamat || '-'}</span>
                   </div>
                 </div>
               </div>
@@ -162,9 +151,6 @@ export default function PatientMaster({ onSelectPasien }) {
                 <div>
                   <h3 className="font-extrabold text-slate-800 text-lg flex items-center space-x-2">
                     <span>{selectedPatientForDetail.nama}</span>
-                    <span className="text-xs font-mono font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-md border border-sky-200">
-                      {selectedPatientForDetail.no_rm}
-                    </span>
                   </h3>
                   <p className="text-xs text-sky-600 font-medium mt-0.5">Rincian Lengkap Data Pasien & Riwayat Kunjungan Klinik</p>
                 </div>
@@ -186,8 +172,8 @@ export default function PatientMaster({ onSelectPasien }) {
                   <span className="font-bold text-slate-800">{selectedPatientForDetail.nama}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block font-medium">Nomor Rekam Medis (No. RM):</span>
-                  <span className="font-mono font-bold text-sky-700">{selectedPatientForDetail.no_rm}</span>
+                  <span className="text-slate-400 block font-medium">Jenis Kelamin:</span>
+                  <span className="font-bold text-slate-800">{selectedPatientForDetail.jenis_kelamin === 'L' ? 'Laki-Laki (L)' : 'Perempuan (P)'}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block font-medium">Jenis Kelamin:</span>
@@ -198,12 +184,8 @@ export default function PatientMaster({ onSelectPasien }) {
                   <span className="font-bold text-slate-800">{selectedPatientForDetail.tanggal_lahir} ({getAge(selectedPatientForDetail.tanggal_lahir)} Tahun)</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block font-medium">No. Telepon / WhatsApp:</span>
-                  <span className="font-bold text-slate-800">{selectedPatientForDetail.no_hp || '-'}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block font-medium">Alamat Tempat Tinggal:</span>
-                  <span className="font-bold text-slate-800">{selectedPatientForDetail.alamat || '-'}</span>
+                  <span className="text-slate-400 block font-medium">Tanggal Lahir & Usia:</span>
+                  <span className="font-bold text-slate-800">{selectedPatientForDetail.tanggal_lahir} ({getAge(selectedPatientForDetail.tanggal_lahir)} Tahun)</span>
                 </div>
               </div>
             </div>
@@ -230,7 +212,7 @@ export default function PatientMaster({ onSelectPasien }) {
                       <div className="space-y-1">
                         <div className="flex items-center space-x-2">
                           <span className="font-mono font-bold text-xs text-slate-800">{v.no_registrasi}</span>
-                          <span className="text-[11px] text-slate-400">&bull; {v.tanggal_kunjungan} ({v.waktu_kunjungan})</span>
+                          <span className="text-[11px] text-slate-400">&bull; {v.tanggal_kunjungan}</span>
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                             v.status_pasien === 'Baru' ? 'bg-sky-100 text-sky-800' : 'bg-indigo-100 text-indigo-800'
                           }`}>

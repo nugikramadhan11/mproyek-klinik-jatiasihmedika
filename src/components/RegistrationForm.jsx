@@ -281,13 +281,13 @@ export default function RegistrationForm({ onSuccess }) {
             <div className="space-y-4 pt-1">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Cari Pasien Lama (Ketik Nama / No. RM)
+                  Cari Pasien Lama (Ketik Nama)
                 </label>
                 <div className="relative">
                   <Search className="w-5 h-5 text-sky-500 absolute left-3.5 top-3" />
                   <input
                     type="text"
-                    placeholder="Ketik minimal 2 karakter, contoh: Andi atau RM-2026-..."
+                    placeholder="Ketik minimal 2 karakter, contoh: Andi"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
@@ -306,7 +306,6 @@ export default function RegistrationForm({ onSuccess }) {
                     >
                       <div>
                         <span className="font-bold text-slate-800 text-sm group-hover:text-sky-700">{p.nama}</span>
-                        <span className="text-xs text-sky-700 ml-2 font-mono bg-sky-100/80 px-2 py-0.5 rounded-md font-bold">{p.no_rm}</span>
                         <p className="text-xs text-slate-500 mt-0.5">Lahir: {p.tanggal_lahir}</p>
                       </div>
                       <span className="text-xs font-extrabold text-sky-600 bg-white px-3 py-1.5 rounded-lg border border-sky-100 group-hover:bg-sky-600 group-hover:text-white transition-all">Pilih &rarr;</span>
@@ -320,7 +319,7 @@ export default function RegistrationForm({ onSuccess }) {
                 <div className="bg-gradient-to-r from-sky-50 to-blue-50/60 border border-sky-200 p-5 rounded-2xl flex items-center justify-between shadow-xs">
                   <div>
                     <span className="text-xs font-bold text-sky-600 uppercase tracking-wider bg-white px-2.5 py-0.5 rounded-md border border-sky-200">Pasien Terpilih</span>
-                    <h4 className="text-base font-black text-slate-800 mt-1">{selectedPasien.nama} <span className="font-mono text-sky-700 text-sm">({selectedPasien.no_rm})</span></h4>
+                    <h4 className="text-base font-black text-slate-800 mt-1">{selectedPasien.nama}</h4>
                     <p className="text-xs text-slate-600 mt-1">
                       Gender: {selectedPasien.jenis_kelamin === 'L' ? 'Laki-Laki' : 'Perempuan'} &bull; Lahir: {selectedPasien.tanggal_lahir}
                     </p>
