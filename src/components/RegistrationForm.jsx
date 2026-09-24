@@ -44,7 +44,7 @@ export default function RegistrationForm({ onSuccess }) {
           setPoliList(res.poli);
           setDokterList(res.dokter);
           if (res.poli.length > 0) {
-            setKunjunganForm(prev => ({ ...prev, poli_id: res.poli[0].id }));
+            setKunjunganForm(prev => ({ ...prev, poli_id: res.poli[0].id, dokter_id: '' }));
           }
         }
       });
@@ -56,10 +56,19 @@ export default function RegistrationForm({ onSuccess }) {
   );
 
   useEffect(() => {
-    if (filteredDokter.length > 0 && !filteredDokter.some(d => d.id === Number(kunjunganForm.dokter_id))) {
-      setKunjunganForm(prev => ({ ...prev, dokter_id: filteredDokter[0].id }));
+    if (!kunjunganForm.poli_id) {
+      setKunjunganForm(prev => (prev.dokter_id === '' ? prev : { ...prev, dokter_id: '' }));
+      return;
     }
-  }, [kunjunganForm.poli_id, dokterList]);
+
+    const selectedDoctorStillValid =
+      kunjunganForm.dokter_id === '' ||
+      filteredDokter.some(d => d.id === Number(kunjunganForm.dokter_id));
+
+    if (!selectedDoctorStillValid && kunjunganForm.dokter_id !== '') {
+      setKunjunganForm(prev => ({ ...prev, dokter_id: '' }));
+    }
+  }, [kunjunganForm.poli_id, filteredDokter, kunjunganForm.dokter_id]);
 
   // Search Pasien Lama
   useEffect(() => {
@@ -116,6 +125,12 @@ export default function RegistrationForm({ onSuccess }) {
       }
 
       // Step 2: Input Data Kunjungan
+      if (!kunjunganForm.poli_id || !kunjunganForm.dokter_id) {
+        setAlertMsg({ type: 'error', text: 'Silakan pilih Poli dan Dokter pemeriksa terlebih dahulu.' });
+        setLoading(false);
+        return;
+      }
+
       const visitPayload = {
         tanggal_kunjungan: kunjunganForm.tanggal_kunjungan,
         poli_id: kunjunganForm.poli_id,
@@ -371,8 +386,8 @@ export default function RegistrationForm({ onSuccess }) {
               <label className="block text-xs font-bold text-slate-700 mb-1.5">Poli Tujuan <span className="text-rose-500">*</span></label>
               <select
                 required
-                value={kunjunganForm.poli_id}
-                onChange={(e) => setKunjunganForm({ ...kunjunganForm, poli_id: e.target.value })}
+                value={kunjunganForm.poli_id ?? ''}
+                onChange={(e) => setKunjunganForm(prev => ({ ...prev, poli_id: Number(e.target.value), dokter_id: '' }))}
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all font-semibold text-slate-800"
               >
                 {poliList.map(p => (
@@ -386,10 +401,12 @@ export default function RegistrationForm({ onSuccess }) {
               <label className="block text-xs font-bold text-slate-700 mb-1.5">Dokter Pemeriksa <span className="text-rose-500">*</span></label>
               <select
                 required
-                value={kunjunganForm.dokter_id}
-                onChange={(e) => setKunjunganForm({ ...kunjunganForm, dokter_id: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all font-semibold text-slate-800"
+                value={kunjunganForm.dokter_id ?? ''}
+                onChange={(e) => setKunjunganForm(prev => ({ ...prev, dokter_id: Number(e.target.value) }))}
+                disabled={filteredDokter.length === 0}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all font-semibold text-slate-800 disabled:bg-slate-100 disabled:cursor-not-allowed"
               >
+                <option value="">Pilih Dokter...</option>
                 {filteredDokter.map(d => (
                   <option key={d.id} value={d.id}>{d.nama_dokter} ({d.spesialisasi})</option>
                 ))}

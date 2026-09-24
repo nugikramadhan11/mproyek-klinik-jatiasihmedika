@@ -57,18 +57,23 @@ CREATE TABLE IF NOT EXISTS `kunjungan` (
 -- ============================================================
 
 INSERT IGNORE INTO `poli` (`id`, `nama_poli`) VALUES
-(1, 'Poli Umum'),
-(2, 'Poli Gigi'),
-(3, 'Poli KIA & Anak'),
-(4, 'Poli Penyakit Dalam'),
-(5, 'Poli Kebidanan & Kandungan');
+(1, 'Rehabilitasi Medik'),
+(2, 'Spesialis Anak'),
+(3, 'Spesialis Syaraf'),
+(4, 'Dokter Umum'),
+(5, 'Dokter Gigi Umum'),
+(6, 'Dokter Gigi Spesialis Kesehatan Gigi Anak');
 
 INSERT IGNORE INTO `dokter` (`id`, `nama_dokter`, `spesialisasi`, `poli_id`) VALUES
-(1, 'dr. Ahmad Hidayat', 'Dokter Umum', 1),
-(2, 'dr. Siti Rahmawati', 'Dokter Gigi', 2),
-(3, 'dr. Budi Santoso, Sp.A', 'Spesialis Anak', 3),
-(4, 'dr. Hendra Wijaya, Sp.PD', 'Spesialis Penyakit Dalam', 4),
-(5, 'dr. Dewi Lestari, Sp.OG', 'Spesialis Kebidanan', 5);
+(1, 'dr. Fatchur Rochman, Sp.KFR (K)', 'Rehabilitasi Medik', 1),
+(2, 'dr. Subagyo, Sp. KFR (K)', 'Rehabilitasi Medik', 1),
+(3, 'dr. Bayu Santoso, Sp.KFR (K)', 'Rehabilitasi Medik', 1),
+(4, 'dr. Ratna Hadju, Sp.A', 'Spesialis Anak', 2),
+(5, 'dr. Ariesia Dewi C, Sp.N', 'Spesialis Syaraf', 3),
+(6, 'dr. Siti Sundari Manoppo', 'Dokter Umum', 4),
+(7, 'dr. Jessica Amelinda Mintarjo', 'Dokter Umum', 4),
+(8, 'drg. Nurus Saadah', 'Dokter Gigi Umum', 5),
+(9, 'drg. Brian Maulani, Sp. KGA', 'Dokter Gigi Spesialis Kesehatan Gigi Anak', 6);
 
 INSERT IGNORE INTO `pasien` (`id`, `no_rm`, `nama`, `nik`, `no_bpjs`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `no_hp`) VALUES
 (1, 'RM-2026-0001', 'Andi Pratama', '3275011205900001', '0001234567891', '1990-05-12', 'L', 'Jl. Jati Asih No. 12, Bekasi', '081234567890'),

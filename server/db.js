@@ -98,50 +98,73 @@ const initDb = async () => {
       )
     `);
 
-    // Seed Master Poli jika kosong
+    const realPoli = [
+      { id: 1, nama_poli: 'Rehabilitasi Medik' },
+      { id: 2, nama_poli: 'Spesialis Anak' },
+      { id: 3, nama_poli: 'Spesialis Syaraf' },
+      { id: 4, nama_poli: 'Dokter Umum' },
+      { id: 5, nama_poli: 'Dokter Gigi Umum' },
+      { id: 6, nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' }
+    ];
+
+    const realDokter = [
+      { id: 1, nama_dokter: 'dr. Fatchur Rochman, Sp.KFR (K)', spesialisasi: 'Rehabilitasi Medik', poli_id: 1 },
+      { id: 2, nama_dokter: 'dr. Subagyo, Sp. KFR (K)', spesialisasi: 'Rehabilitasi Medik', poli_id: 1 },
+      { id: 3, nama_dokter: 'dr. Bayu Santoso, Sp.KFR (K)', spesialisasi: 'Rehabilitasi Medik', poli_id: 1 },
+      { id: 4, nama_dokter: 'dr. Ratna Hadju, Sp.A', spesialisasi: 'Spesialis Anak', poli_id: 2 },
+      { id: 5, nama_dokter: 'dr. Ariesia Dewi C, Sp.N', spesialisasi: 'Spesialis Syaraf', poli_id: 3 },
+      { id: 6, nama_dokter: 'dr. Siti Sundari Manoppo', spesialisasi: 'Dokter Umum', poli_id: 4 },
+      { id: 7, nama_dokter: 'dr. Jessica Amelinda Mintarjo', spesialisasi: 'Dokter Umum', poli_id: 4 },
+      { id: 8, nama_dokter: 'drg. Nurus Saadah', spesialisasi: 'Dokter Gigi Umum', poli_id: 5 },
+      { id: 9, nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 }
+    ];
+
+    // Seed Master Poli jika kosong, atau migrasi data lama ke data klinik aktual
     const countPoli = await dbGet('SELECT COUNT(*) as count FROM poli');
     if (countPoli.count === 0) {
-      await dbRun('INSERT INTO poli (nama_poli) VALUES ("Poli Umum"), ("Poli Gigi"), ("Poli KIA & Anak"), ("Poli Penyakit Dalam"), ("Poli Kebidanan & Kandungan")');
+      for (const p of realPoli) {
+        await dbRun('INSERT INTO poli (id, nama_poli) VALUES (?, ?)', [p.id, p.nama_poli]);
+      }
+    } else {
+      const existingPoli = await dbAll('SELECT id, nama_poli FROM poli ORDER BY id');
+      const hasLegacyPoli = existingPoli.some(p => ['Poli Umum', 'Poli Gigi', 'Poli KIA & Anak', 'Poli Penyakit Dalam', 'Poli Kebidanan & Kandungan'].includes(p.nama_poli));
+      if (hasLegacyPoli) {
+        for (const p of realPoli) {
+          const row = existingPoli.find(item => item.id === p.id) || null;
+          if (row) {
+            await dbRun('UPDATE poli SET nama_poli = ? WHERE id = ?', [p.nama_poli, p.id]);
+          } else {
+            await dbRun('INSERT INTO poli (id, nama_poli) VALUES (?, ?)', [p.id, p.nama_poli]);
+          }
+        }
+      }
     }
 
-    // Seed Master Dokter jika kosong
+    // Seed Master Dokter jika kosong, atau migrasi data lama ke data klinik aktual
     const countDokter = await dbGet('SELECT COUNT(*) as count FROM dokter');
     if (countDokter.count === 0) {
-      await dbRun('INSERT INTO dokter (nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?)', ['dr. Ahmad Hidayat', 'Dokter Umum', 1]);
-      await dbRun('INSERT INTO dokter (nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?)', ['dr. Siti Rahmawati', 'Dokter Gigi', 2]);
-      await dbRun('INSERT INTO dokter (nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?)', ['dr. Budi Santoso, Sp.A', 'Spesialis Anak', 3]);
-      await dbRun('INSERT INTO dokter (nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?)', ['dr. Hendra Wijaya, Sp.PD', 'Spesialis Penyakit Dalam', 4]);
-      await dbRun('INSERT INTO dokter (nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?)', ['dr. Dewi Lestari, Sp.OG', 'Spesialis Kebidanan', 5]);
+      for (const d of realDokter) {
+        await dbRun('INSERT INTO dokter (id, nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?, ?)', [d.id, d.nama_dokter, d.spesialisasi, d.poli_id]);
+      }
+    } else {
+      const existingDokter = await dbAll('SELECT id, nama_dokter, spesialisasi, poli_id FROM dokter ORDER BY id');
+      const hasLegacyDokter = existingDokter.some(d => ['dr. Ahmad Hidayat', 'dr. Siti Rahmawati', 'dr. Budi Santoso, Sp.A', 'dr. Hendra Wijaya, Sp.PD', 'dr. Dewi Lestari, Sp.OG'].includes(d.nama_dokter));
+      if (hasLegacyDokter) {
+        for (const d of realDokter) {
+          const row = existingDokter.find(item => item.id === d.id) || null;
+          if (row) {
+            await dbRun('UPDATE dokter SET nama_dokter = ?, spesialisasi = ?, poli_id = ? WHERE id = ?', [d.nama_dokter, d.spesialisasi, d.poli_id, d.id]);
+          } else {
+            await dbRun('INSERT INTO dokter (id, nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?, ?)', [d.id, d.nama_dokter, d.spesialisasi, d.poli_id]);
+          }
+        }
+      }
     }
 
-    // Seed Initial Data Pasien & Kunjungan jika kosong (agar dashboard langsung ber-isi data riil klinik)
+    // Data pasien & kunjungan awal dibuat kosong agar mengikuti data klinik aktual.
     const countPasien = await dbGet('SELECT COUNT(*) as count FROM pasien');
     if (countPasien.count === 0) {
-      // Seed Pasien
-      const pas1 = await dbRun('INSERT INTO pasien (no_rm, nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin, alamat, no_hp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ['RM-2026-0001', 'Andi Pratama', '3275011205900001', '0001234567891', '1990-05-12', 'L', 'Jl. Jati Asih No. 12, Bekasi', '081234567890']);
-      const pas2 = await dbRun('INSERT INTO pasien (no_rm, nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin, alamat, no_hp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ['RM-2026-0002', 'Siti Nurhaliza', '3275015508850002', '', '1985-08-15', 'P', 'Jl. Kp. Sawah No. 45, Bekasi', '081987654321']);
-      const pas3 = await dbRun('INSERT INTO pasien (no_rm, nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin, alamat, no_hp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ['RM-2026-0003', 'Muhammad Rizky', '3275012010210003', '0009876543210', '2021-10-20', 'L', 'Jl. Ratna No. 8, Jati Asih', '085711223344']);
-      const pas4 = await dbRun('INSERT INTO pasien (no_rm, nama, nik, no_bpjs, tanggal_lahir, jenis_kelamin, alamat, no_hp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ['RM-2026-0004', 'Eka Suryani', '3275014304600004', '', '1960-04-03', 'P', 'Jl. Wibawa Mukti II No. 19, Bekasi', '081399887766']);
-
-      // Seed Kunjungan
-      const today = new Date().toISOString().split('T')[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-      const twoDaysAgo = new Date(Date.now() - 172800000).toISOString().split('T')[0];
-
-      await dbRun('INSERT INTO kunjungan (no_registrasi, tanggal_kunjungan, waktu_kunjungan, pasien_id, status_pasien, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['REG-20260910-001', twoDaysAgo, '08:30', pas1.lastID, 'Baru', 1, 1, 'BPJS/JKN', '0001234567891', 'Pemeriksaan Rutin & Resep Obat', 'Pasien mengeluh demam']);
-      await dbRun('INSERT INTO kunjungan (no_registrasi, tanggal_kunjungan, waktu_kunjungan, pasien_id, status_pasien, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['REG-20260911-001', yesterday, '09:15', pas2.lastID, 'Baru', 2, 2, 'Umum', '', 'Penambalan Gigi berlubang', 'Gigi graham kanan']);
-      await dbRun('INSERT INTO kunjungan (no_registrasi, tanggal_kunjungan, waktu_kunjungan, pasien_id, status_pasien, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['REG-20260911-002', yesterday, '10:00', pas3.lastID, 'Baru', 3, 3, 'BPJS/JKN', '0009876543210', 'Imunisasi Balita', 'Batuk ringan']);
-      await dbRun('INSERT INTO kunjungan (no_registrasi, tanggal_kunjungan, waktu_kunjungan, pasien_id, status_pasien, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['REG-20260912-001', today, '08:00', pas4.lastID, 'Baru', 4, 4, 'Umum', '', 'Pemeriksaan Hipertensi & EKG', 'Kontrol rutin Lansia']);
-      await dbRun('INSERT INTO kunjungan (no_registrasi, tanggal_kunjungan, waktu_kunjungan, pasien_id, status_pasien, poli_id, dokter_id, penjamin, no_kartu_penjamin, tindakan, catatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['REG-20260912-002', today, '10:30', pas1.lastID, 'Lama', 1, 1, 'BPJS/JKN', '0001234567891', 'Kontrol Ulang Pasca Demam', 'Kondisi membaik']);
+      // Tidak ada seed pasien/fake kunjungan; user akan mendaftarkan data baru.
     }
 
     console.log('Database Klinik Utama Jati Asih Medika berhasil diinisialisasi & di-seed.');

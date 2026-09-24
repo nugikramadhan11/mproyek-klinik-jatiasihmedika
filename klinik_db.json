@@ -40,55 +40,83 @@
   "poli": [
     {
       "id": 1,
-      "nama_poli": "Poli Umum"
+      "nama_poli": "Rehabilitasi Medik"
     },
     {
       "id": 2,
-      "nama_poli": "Poli Gigi"
+      "nama_poli": "Spesialis Anak"
     },
     {
       "id": 3,
-      "nama_poli": "Poli KIA & Anak"
+      "nama_poli": "Spesialis Syaraf"
     },
     {
       "id": 4,
-      "nama_poli": "Poli Penyakit Dalam"
+      "nama_poli": "Dokter Umum"
     },
     {
       "id": 5,
-      "nama_poli": "Poli Kebidanan & Kandungan"
+      "nama_poli": "Dokter Gigi Umum"
+    },
+    {
+      "id": 6,
+      "nama_poli": "Dokter Gigi Spesialis Kesehatan Gigi Anak"
     }
   ],
   "dokter": [
     {
       "id": 1,
-      "nama_dokter": "dr. Ahmad Hidayat",
-      "spesialisasi": "Dokter Umum",
+      "nama_dokter": "dr. Fatchur Rochman, Sp.KFR (K)",
+      "spesialisasi": "Rehabilitasi Medik",
       "poli_id": 1
     },
     {
       "id": 2,
-      "nama_dokter": "dr. Siti Rahmawati",
-      "spesialisasi": "Dokter Gigi",
-      "poli_id": 2
+      "nama_dokter": "dr. Subagyo, Sp. KFR (K)",
+      "spesialisasi": "Rehabilitasi Medik",
+      "poli_id": 1
     },
     {
       "id": 3,
-      "nama_dokter": "dr. Budi Santoso, Sp.A",
-      "spesialisasi": "Spesialis Anak",
-      "poli_id": 3
+      "nama_dokter": "dr. Bayu Santoso, Sp.KFR (K)",
+      "spesialisasi": "Rehabilitasi Medik",
+      "poli_id": 1
     },
     {
       "id": 4,
-      "nama_dokter": "dr. Hendra Wijaya, Sp.PD",
-      "spesialisasi": "Spesialis Penyakit Dalam",
-      "poli_id": 4
+      "nama_dokter": "dr. Ratna Hadju, Sp.A",
+      "spesialisasi": "Spesialis Anak",
+      "poli_id": 2
     },
     {
       "id": 5,
-      "nama_dokter": "dr. Dewi Lestari, Sp.OG",
-      "spesialisasi": "Spesialis Kebidanan",
+      "nama_dokter": "dr. Ariesia Dewi C, Sp.N",
+      "spesialisasi": "Spesialis Syaraf",
+      "poli_id": 3
+    },
+    {
+      "id": 6,
+      "nama_dokter": "dr. Siti Sundari Manoppo",
+      "spesialisasi": "Dokter Umum",
+      "poli_id": 4
+    },
+    {
+      "id": 7,
+      "nama_dokter": "dr. Jessica Amelinda Mintarjo",
+      "spesialisasi": "Dokter Umum",
+      "poli_id": 4
+    },
+    {
+      "id": 8,
+      "nama_dokter": "drg. Nurus Saadah",
+      "spesialisasi": "Dokter Gigi Umum",
       "poli_id": 5
+    },
+    {
+      "id": 9,
+      "nama_dokter": "drg. Brian Maulani, Sp. KGA",
+      "spesialisasi": "Dokter Gigi Spesialis Kesehatan Gigi Anak",
+      "poli_id": 6
     }
   ],
   "kunjungan": [
