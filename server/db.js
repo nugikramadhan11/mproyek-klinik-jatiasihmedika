@@ -104,7 +104,8 @@ const initDb = async () => {
       { id: 3, nama_poli: 'Spesialis Syaraf' },
       { id: 4, nama_poli: 'Dokter Umum' },
       { id: 5, nama_poli: 'Dokter Gigi Umum' },
-      { id: 6, nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' }
+      { id: 6, nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' },
+      { id: 7, nama_poli: 'FISIOTERAPIS' }
     ];
 
     const realDokter = [
@@ -116,47 +117,46 @@ const initDb = async () => {
       { id: 6, nama_dokter: 'dr. Siti Sundari Manoppo', spesialisasi: 'Dokter Umum', poli_id: 4 },
       { id: 7, nama_dokter: 'dr. Jessica Amelinda Mintarjo', spesialisasi: 'Dokter Umum', poli_id: 4 },
       { id: 8, nama_dokter: 'drg. Nurus Saadah', spesialisasi: 'Dokter Gigi Umum', poli_id: 5 },
-      { id: 9, nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 }
+      { id: 9, nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 },
+      { id: 10, nama_dokter: 'Slamet Purnomo, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+      { id: 11, nama_dokter: 'Sulistiono, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+      { id: 12, nama_dokter: 'Hendro S. A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+      { id: 13, nama_dokter: 'Jackie Valentina N, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+      { id: 14, nama_dokter: 'Wahyu Setyaningsih, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 }
     ];
 
-    // Seed Master Poli jika kosong, atau migrasi data lama ke data klinik aktual
+    // Seed Master Poli agar selalu sinkron dengan data klinik aktual
     const countPoli = await dbGet('SELECT COUNT(*) as count FROM poli');
+    const existingPoli = await dbAll('SELECT id, nama_poli FROM poli ORDER BY id');
     if (countPoli.count === 0) {
       for (const p of realPoli) {
         await dbRun('INSERT INTO poli (id, nama_poli) VALUES (?, ?)', [p.id, p.nama_poli]);
       }
     } else {
-      const existingPoli = await dbAll('SELECT id, nama_poli FROM poli ORDER BY id');
-      const hasLegacyPoli = existingPoli.some(p => ['Poli Umum', 'Poli Gigi', 'Poli KIA & Anak', 'Poli Penyakit Dalam', 'Poli Kebidanan & Kandungan'].includes(p.nama_poli));
-      if (hasLegacyPoli) {
-        for (const p of realPoli) {
-          const row = existingPoli.find(item => item.id === p.id) || null;
-          if (row) {
-            await dbRun('UPDATE poli SET nama_poli = ? WHERE id = ?', [p.nama_poli, p.id]);
-          } else {
-            await dbRun('INSERT INTO poli (id, nama_poli) VALUES (?, ?)', [p.id, p.nama_poli]);
-          }
+      for (const p of realPoli) {
+        const row = existingPoli.find(item => item.id === p.id) || null;
+        if (row) {
+          await dbRun('UPDATE poli SET nama_poli = ? WHERE id = ?', [p.nama_poli, p.id]);
+        } else {
+          await dbRun('INSERT INTO poli (id, nama_poli) VALUES (?, ?)', [p.id, p.nama_poli]);
         }
       }
     }
 
-    // Seed Master Dokter jika kosong, atau migrasi data lama ke data klinik aktual
+    // Seed Master Dokter agar selalu sinkron dengan data klinik aktual
     const countDokter = await dbGet('SELECT COUNT(*) as count FROM dokter');
+    const existingDokter = await dbAll('SELECT id, nama_dokter, spesialisasi, poli_id FROM dokter ORDER BY id');
     if (countDokter.count === 0) {
       for (const d of realDokter) {
         await dbRun('INSERT INTO dokter (id, nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?, ?)', [d.id, d.nama_dokter, d.spesialisasi, d.poli_id]);
       }
     } else {
-      const existingDokter = await dbAll('SELECT id, nama_dokter, spesialisasi, poli_id FROM dokter ORDER BY id');
-      const hasLegacyDokter = existingDokter.some(d => ['dr. Ahmad Hidayat', 'dr. Siti Rahmawati', 'dr. Budi Santoso, Sp.A', 'dr. Hendra Wijaya, Sp.PD', 'dr. Dewi Lestari, Sp.OG'].includes(d.nama_dokter));
-      if (hasLegacyDokter) {
-        for (const d of realDokter) {
-          const row = existingDokter.find(item => item.id === d.id) || null;
-          if (row) {
-            await dbRun('UPDATE dokter SET nama_dokter = ?, spesialisasi = ?, poli_id = ? WHERE id = ?', [d.nama_dokter, d.spesialisasi, d.poli_id, d.id]);
-          } else {
-            await dbRun('INSERT INTO dokter (id, nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?, ?)', [d.id, d.nama_dokter, d.spesialisasi, d.poli_id]);
-          }
+      for (const d of realDokter) {
+        const row = existingDokter.find(item => item.id === d.id) || null;
+        if (row) {
+          await dbRun('UPDATE dokter SET nama_dokter = ?, spesialisasi = ?, poli_id = ? WHERE id = ?', [d.nama_dokter, d.spesialisasi, d.poli_id, d.id]);
+        } else {
+          await dbRun('INSERT INTO dokter (id, nama_dokter, spesialisasi, poli_id) VALUES (?, ?, ?, ?)', [d.id, d.nama_dokter, d.spesialisasi, d.poli_id]);
         }
       }
     }

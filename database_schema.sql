@@ -80,7 +80,8 @@ INSERT INTO `poli` (`id`, `nama_poli`) VALUES
 (3, 'Spesialis Syaraf'),
 (4, 'Dokter Umum'),
 (5, 'Dokter Gigi Umum'),
-(6, 'Dokter Gigi Spesialis Kesehatan Gigi Anak');
+(6, 'Dokter Gigi Spesialis Kesehatan Gigi Anak'),
+(7, 'FISIOTERAPIS');
 
 INSERT INTO `dokter` (`id`, `nama_dokter`, `spesialisasi`, `poli_id`) VALUES
 (1, 'dr. Fatchur Rochman, Sp.KFR (K)', 'Rehabilitasi Medik', 1),
@@ -91,7 +92,12 @@ INSERT INTO `dokter` (`id`, `nama_dokter`, `spesialisasi`, `poli_id`) VALUES
 (6, 'dr. Siti Sundari Manoppo', 'Dokter Umum', 4),
 (7, 'dr. Jessica Amelinda Mintarjo', 'Dokter Umum', 4),
 (8, 'drg. Nurus Saadah', 'Dokter Gigi Umum', 5),
-(9, 'drg. Brian Maulani, Sp. KGA', 'Dokter Gigi Spesialis Kesehatan Gigi Anak', 6);
+(9, 'drg. Brian Maulani, Sp. KGA', 'Dokter Gigi Spesialis Kesehatan Gigi Anak', 6),
+(10, 'Slamet Purnomo, A.Md. Fis', 'FISIOTERAPIS', 7),
+(11, 'Sulistiono, A.Md. Fis', 'FISIOTERAPIS', 7),
+(12, 'Hendro S. A.Md. Fis', 'FISIOTERAPIS', 7),
+(13, 'Jackie Valentina N, A.Md. Fis', 'FISIOTERAPIS', 7),
+(14, 'Wahyu Setyaningsih, A.Md. Fis', 'FISIOTERAPIS', 7);
 
 INSERT INTO `pasien` (`id`, `no_rm`, `nama`, `nik`, `no_bpjs`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `no_hp`) VALUES
 (1, 'RM-2026-0001', 'Andi Pratama', '3275011205900001', '0001234567891', '1990-05-12', 'L', 'Jl. Jati Asih No. 12, Bekasi', '081234567890'),

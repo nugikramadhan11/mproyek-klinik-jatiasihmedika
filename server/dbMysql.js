@@ -47,7 +47,8 @@ const initialSeed = {
     { nama_poli: 'Spesialis Syaraf' },
     { nama_poli: 'Dokter Umum' },
     { nama_poli: 'Dokter Gigi Umum' },
-    { nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' }
+    { nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' },
+    { nama_poli: 'FISIOTERAPIS' }
   ],
   dokter: [
     { nama_dokter: 'dr. Fatchur Rochman, Sp.KFR (K)', spesialisasi: 'Rehabilitasi Medik', poli_id: 1 },
@@ -58,7 +59,12 @@ const initialSeed = {
     { nama_dokter: 'dr. Siti Sundari Manoppo', spesialisasi: 'Dokter Umum', poli_id: 4 },
     { nama_dokter: 'dr. Jessica Amelinda Mintarjo', spesialisasi: 'Dokter Umum', poli_id: 4 },
     { nama_dokter: 'drg. Nurus Saadah', spesialisasi: 'Dokter Gigi Umum', poli_id: 5 },
-    { nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 }
+    { nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 },
+    { nama_dokter: 'Slamet Purnomo, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+    { nama_dokter: 'Sulistiono, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+    { nama_dokter: 'Hendro S. A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+    { nama_dokter: 'Jackie Valentina N, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+    { nama_dokter: 'Wahyu Setyaningsih, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 }
   ],
   kunjungan: []
 };
@@ -172,11 +178,12 @@ export async function initMysql() {
         { id: 3, nama_poli: 'Spesialis Syaraf' },
         { id: 4, nama_poli: 'Dokter Umum' },
         { id: 5, nama_poli: 'Dokter Gigi Umum' },
-        { id: 6, nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' }
+        { id: 6, nama_poli: 'Dokter Gigi Spesialis Kesehatan Gigi Anak' },
+        { id: 7, nama_poli: 'FISIOTERAPIS' }
       ];
 
       const hasLegacyPoli = poliRows.some(p => legacyPoliNames.has(p.nama_poli));
-      if (hasLegacyPoli) {
+      if (hasLegacyPoli || true) {
         for (const p of targetPoli) {
           const existing = poliRows.find(item => item.id === p.id);
           if (existing) {
@@ -205,11 +212,16 @@ export async function initMysql() {
         { id: 6, nama_dokter: 'dr. Siti Sundari Manoppo', spesialisasi: 'Dokter Umum', poli_id: 4 },
         { id: 7, nama_dokter: 'dr. Jessica Amelinda Mintarjo', spesialisasi: 'Dokter Umum', poli_id: 4 },
         { id: 8, nama_dokter: 'drg. Nurus Saadah', spesialisasi: 'Dokter Gigi Umum', poli_id: 5 },
-        { id: 9, nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 }
+        { id: 9, nama_dokter: 'drg. Brian Maulani, Sp. KGA', spesialisasi: 'Dokter Gigi Spesialis Kesehatan Gigi Anak', poli_id: 6 },
+        { id: 10, nama_dokter: 'Slamet Purnomo, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+        { id: 11, nama_dokter: 'Sulistiono, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+        { id: 12, nama_dokter: 'Hendro S. A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+        { id: 13, nama_dokter: 'Jackie Valentina N, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 },
+        { id: 14, nama_dokter: 'Wahyu Setyaningsih, A.Md. Fis', spesialisasi: 'FISIOTERAPIS', poli_id: 7 }
       ];
 
       const hasLegacyDokter = dokterRows.some(d => legacyDokterNames.has(d.nama_dokter));
-      if (hasLegacyDokter) {
+      if (hasLegacyDokter || true) {
         for (const d of targetDokter) {
           const existing = dokterRows.find(item => item.id === d.id);
           if (existing) {
