@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Edit3, Trash2, Calendar, UserCheck, ShieldCheck, Stethoscope, CheckCircle2, X, Filter } from 'lucide-react';
 import { realtime } from '../utils/realtime';
+import TindakanSelector from './TindakanSelector';
 
 export default function VisitList() {
   const [visits, setVisits] = useState([]);
@@ -393,11 +394,10 @@ export default function VisitList() {
 
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Tindakan Medis</label>
-                <input
-                  type="text"
-                  value={editForm.tindakan}
-                  onChange={(e) => setEditForm({ ...editForm, tindakan: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none"
+                <TindakanSelector
+                  value={editForm.tindakan || ''}
+                  onChange={(tindakan) => setEditForm(prev => ({ ...prev, tindakan }))}
+                  compact
                 />
               </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserPlus, Search, CheckCircle2, AlertCircle, Calendar, Clock, Stethoscope, FileText, UserCheck, Shield, Sparkles } from 'lucide-react';
 import { realtime } from '../utils/realtime';
+import TindakanSelector from './TindakanSelector';
 
 export default function RegistrationForm({ onSuccess }) {
   const [isPasienBaru, setIsPasienBaru] = useState(true);
@@ -28,7 +29,7 @@ export default function RegistrationForm({ onSuccess }) {
     dokter_id: '',
     penjamin: 'BPJS/JKN',
     no_kartu_penjamin: '',
-    tindakan: 'Pemeriksaan Medis & Konsultasi',
+    tindakan: '',
     catatan: ''
   });
 
@@ -430,12 +431,9 @@ export default function RegistrationForm({ onSuccess }) {
             {/* Tindakan */}
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-700 mb-1.5">Tindakan / Pelayanan Medis</label>
-              <input
-                type="text"
-                placeholder="Contoh: Pemeriksaan Umum, Imunisasi, Penambalan Gigi..."
+              <TindakanSelector
                 value={kunjunganForm.tindakan}
-                onChange={(e) => setKunjunganForm({ ...kunjunganForm, tindakan: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all"
+                onChange={(tindakan) => setKunjunganForm(prev => ({ ...prev, tindakan }))}
               />
             </div>
 
