@@ -369,7 +369,7 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
       item.nama_poli || '-',
       item.nama_dokter || '-',
       item.penjamin || '-',
-      item.tindakan || '-'
+      String(item.tindakan || '-').trim()
     ]);
 
     runAutoTable({
@@ -381,17 +381,17 @@ export const exportToPDF = async (data = [], summary = {}, filterInfo = {}) => {
       headStyles: { fillColor: [2, 132, 199], textColor: [255, 255, 255], fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [248, 250, 252] },
       columnStyles: {
-        0: { cellWidth: 10 },
-        1: { cellWidth: 26 },
-        2: { cellWidth: 20 },
-        3: { cellWidth: 32 },
-        4: { cellWidth: 16 },
-        5: { cellWidth: 10 },
-        6: { cellWidth: 14 },
-        7: { cellWidth: 26 },
-        8: { cellWidth: 26 },
-        9: { cellWidth: 30 },
-        10: { cellWidth: 18 },
+        0: { cellWidth: 8 },
+        1: { cellWidth: 22 },
+        2: { cellWidth: 17 },
+        3: { cellWidth: 28 },
+        4: { cellWidth: 14 },
+        5: { cellWidth: 8 },
+        6: { cellWidth: 12 },
+        7: { cellWidth: 20 },
+        8: { cellWidth: 22 },
+        9: { cellWidth: 25 },
+        10: { cellWidth: 16 },
         11: { cellWidth: 'auto' }
       }
     });

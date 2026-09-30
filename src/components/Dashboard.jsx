@@ -3,6 +3,7 @@ import { Users, UserCheck, ShieldCheck, UserPlus, HeartPulse, PieChart as PieIco
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Bar, Pie, Doughnut } from 'react-chartjs-2';
 import { realtime } from '../utils/realtime';
+import { tindakanCategoryByOption } from './TindakanSelector';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -15,7 +16,15 @@ export default function Dashboard({ setActiveTab }) {
       const res = await fetch('/api/rekapitulasi');
       const result = await res.json();
       if (result.success) {
-        setData(result.summary);
+        const tindakanCounts = result.summary.tindakanCounts || (result.detail || []).reduce((counts, visit) => {
+          const tindakan = visit.tindakan?.trim();
+          if (tindakan) {
+            counts[tindakan] = (counts[tindakan] || 0) + 1;
+          }
+          return counts;
+        }, {});
+
+        setData({ ...result.summary, tindakanCounts });
       }
     } catch (err) {
       console.error('Error fetching dashboard:', err);
@@ -180,6 +189,16 @@ export default function Dashboard({ setActiveTab }) {
       maxBarThickness: 42
     }]
   };
+
+  const tindakanEntries = Object.entries(data.tindakanCounts || {}).reduce((groups, [tindakan, value]) => {
+    const category = tindakanCategoryByOption.get(tindakan) || 'Lainnya';
+    groups[category] = (groups[category] || 0) + value;
+    return groups;
+  }, {});
+  const groupedTindakanEntries = Object.entries(tindakanEntries)
+    .map(([label, value]) => ({ label, value }))
+    .sort((a, b) => b.value - a.value);
+  const maxTindakanCount = groupedTindakanEntries[0]?.value || 1;
 
   return (
     <div className="space-y-7">
@@ -403,6 +422,38 @@ export default function Dashboard({ setActiveTab }) {
         </div>
 
       </div>
+
+      <section className="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm">
+        <div className="flex items-center justify-between gap-3 mb-5">
+          <div>
+            <h3 className="font-extrabold text-slate-800 text-base">Tindakan Medis Terpilih</h3>
+            <p className="text-xs text-slate-500 mt-1">Jumlah kunjungan per kategori tindakan</p>
+          </div>
+          <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-100">
+            {groupedTindakanEntries.reduce((total, item) => total + item.value, 0)} kunjungan
+          </span>
+        </div>
+        {groupedTindakanEntries.length === 0 ? (
+          <p className="py-6 text-center text-sm text-slate-400">Belum ada tindakan yang tercatat.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+            {groupedTindakanEntries.map(item => (
+              <div key={item.label}>
+                <div className="flex items-center justify-between gap-3 mb-1.5">
+                  <span className="text-xs font-semibold text-slate-700">{item.label}</span>
+                  <span className="text-xs font-black text-slate-800">{item.value}</span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-emerald-500"
+                    style={{ width: `${(item.value / maxTindakanCount) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
     </div>
   );

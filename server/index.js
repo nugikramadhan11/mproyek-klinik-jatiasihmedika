@@ -523,6 +523,7 @@ app.get('/api/rekapitulasi', async (req, res) => {
         jenis_kelamin: pasien.jenis_kelamin || 'L',
         nama_poli: poli.nama_poli || '',
         nama_dokter: dokter.nama_dokter || '',
+        tindakan: k.tindakan || '',
         usia: age,
         rentang_usia: getAgeGroup(pasien.tanggal_lahir)
       };
@@ -556,6 +557,7 @@ app.get('/api/rekapitulasi', async (req, res) => {
       '>60 th': 0
     };
     const poliCounts = {};
+    const tindakanCounts = {};
 
     visits.forEach(v => {
       if (v.status_pasien === 'Baru') statusCounts.Baru++;
@@ -572,6 +574,11 @@ app.get('/api/rekapitulasi', async (req, res) => {
       }
 
       poliCounts[v.nama_poli] = (poliCounts[v.nama_poli] || 0) + 1;
+
+      const tindakan = v.tindakan?.trim();
+      if (tindakan) {
+        tindakanCounts[tindakan] = (tindakanCounts[tindakan] || 0) + 1;
+      }
     });
 
     res.json({
@@ -582,7 +589,8 @@ app.get('/api/rekapitulasi', async (req, res) => {
         penjaminCounts,
         genderCounts,
         ageGroupCounts,
-        poliCounts
+        poliCounts,
+        tindakanCounts
       },
       detail: visits.sort((a, b) => (a.tanggal_kunjungan < b.tanggal_kunjungan ? -1 : 1))
     });

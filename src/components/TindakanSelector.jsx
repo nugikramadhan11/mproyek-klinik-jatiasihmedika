@@ -61,6 +61,11 @@ const allGroups = tindakanGroups.flatMap(section =>
   section.groups.map(group => ({ ...group, category: section.category }))
 );
 
+export const tindakanCategoryByOption = new Map([
+  ...allGroups.flatMap(group => group.options.map(option => [option, group.category])),
+  ['Pemeriksaan Medis & Konsultasi', tindakanGroups[0].category]
+]);
+
 export default function TindakanSelector({ value = '', onChange, required = false, compact = false }) {
   const initialGroup = allGroups.find(group => group.options.includes(value));
   const isLegacyValue = Boolean(value) && !initialGroup;
