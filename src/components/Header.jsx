@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, LayoutDashboard, UserPlus, ClipboardList, FileBarChart, Users } from 'lucide-react';
+import { LayoutDashboard, UserPlus, ClipboardList, FileBarChart } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab }) {
   const navItems = [
@@ -7,7 +7,6 @@ export default function Header({ activeTab, setActiveTab }) {
     { id: 'pendaftaran', label: 'Pendaftaran', icon: UserPlus },
     { id: 'riwayat', label: 'Data Kunjungan', icon: ClipboardList },
     { id: 'laporan', label: 'Laporan & Rekap', icon: FileBarChart },
-    { id: 'pasien', label: 'Master Pasien', icon: Users },
   ];
 
   return (
@@ -80,5 +79,3 @@ export default function Header({ activeTab, setActiveTab }) {
     </header>
   );
 }
-
-

@@ -4,9 +4,8 @@ import Dashboard from './components/Dashboard';
 import RegistrationForm from './components/RegistrationForm';
 import VisitList from './components/VisitList';
 import Reports from './components/Reports';
-import PatientMaster from './components/PatientMaster';
 
-const VALID_TABS = ['dashboard', 'pendaftaran', 'riwayat', 'laporan', 'pasien'];
+const VALID_TABS = ['dashboard', 'pendaftaran', 'riwayat', 'laporan'];
 
 export default function App() {
   const [activeTab, setActiveTabState] = useState(() => {
@@ -53,9 +52,6 @@ export default function App() {
         )}
         {activeTab === 'riwayat' && <VisitList />}
         {activeTab === 'laporan' && <Reports />}
-        {activeTab === 'pasien' && (
-          <PatientMaster onSelectPasien={() => setActiveTab('pendaftaran')} />
-        )}
       </main>
 
       {/* Footer */}
@@ -71,4 +67,3 @@ export default function App() {
     </div>
   );
 }
-

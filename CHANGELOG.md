@@ -6,6 +6,13 @@ Riwayat rilis aplikasi berdasarkan commit GitHub, menggunakan format **MAJOR.MIN
 - **MINOR**: fitur baru yang tetap kompatibel.
 - **PATCH**: perbaikan bug yang tetap kompatibel.
 
+## [v1.4.0] - 2026-11-08
+
+- Menghapus menu Master Pasien dari navigasi dan aplikasi.
+- Menambahkan filter kunjungan berdasarkan bulan dan tahun.
+- Memperketat validasi ekspor laporan dan pemilihan periode.
+- Menghapus tombol shortcut periode pada laporan.
+
 ## [v1.3.0] - 2026-10-01
 
 - Memperbarui data dan tampilan tindakan pada dashboard.

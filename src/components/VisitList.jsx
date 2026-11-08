@@ -8,6 +8,7 @@ export default function VisitList() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [monthFilter, setMonthFilter] = useState('');
   const [penjaminFilter, setPenjaminFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
@@ -29,8 +30,15 @@ export default function VisitList() {
         status_pasien: statusFilter
       };
       if (dateFilter) {
+        // Filter tanggal spesifik
         queryParams.start_date = dateFilter;
         queryParams.end_date = dateFilter;
+      } else if (monthFilter) {
+        // Filter satu bulan penuh tanpa menggeser tanggal akibat konversi UTC.
+        const [year, month] = monthFilter.split('-').map(Number);
+        const lastDay = new Date(year, month, 0).getDate();
+        queryParams.start_date = `${monthFilter}-01`;
+        queryParams.end_date = `${monthFilter}-${String(lastDay).padStart(2, '0')}`;
       }
       const query = new URLSearchParams(queryParams).toString();
 
@@ -63,7 +71,7 @@ export default function VisitList() {
       fetchVisits();
     });
     return () => unsubscribe();
-  }, [search, penjaminFilter, statusFilter, dateFilter]);
+  }, [search, penjaminFilter, statusFilter, dateFilter, monthFilter]);
 
   // Open Edit Modal (REQ-04)
   const handleEditClick = (visit) => {
@@ -151,7 +159,7 @@ export default function VisitList() {
         </div>
 
         {/* Filter Toolbar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1">
           <div className="relative">
             <Search className="w-4 h-4 text-sky-500 absolute left-3.5 top-3" />
             <input
@@ -163,15 +171,41 @@ export default function VisitList() {
             />
           </div>
 
-          <div className="relative">
-            <Calendar className="w-4 h-4 text-sky-500 absolute left-3.5 top-3 pointer-events-none" />
-            <input
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all text-slate-700"
-              title="Filter Tanggal Kunjungan"
-            />
+          {/* Filter Tanggal Harian */}
+          <div className="space-y-1">
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-0.5"></label>
+            <div className="relative">
+              <Calendar className="w-4 h-4 text-sky-500 absolute left-3.5 top-3 pointer-events-none" />
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => { setDateFilter(e.target.value); setMonthFilter(''); }}
+                className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all text-slate-700"
+                title="Filter Tanggal Kunjungan"
+              />
+            </div>
+          </div>
+
+          {/* Filter Bulanan */}
+          <div className="space-y-1">
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-0.5"></label>
+            <div className="relative">
+              <input
+                type="month"
+                value={monthFilter}
+                onChange={(e) => { setMonthFilter(e.target.value); setDateFilter(''); }}
+                style={{ color: monthFilter ? undefined : 'transparent' }}
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition-all ${
+                  monthFilter ? 'border-sky-400 bg-sky-50 text-sky-800 font-bold' : 'border-slate-200'
+                }`}
+                title="Filter Bulan Kunjungan"
+              />
+              {!monthFilter && (
+                <span className="absolute inset-0 flex items-center px-3.5 text-xs text-slate-400 font-medium pointer-events-none">
+                  Pilih Bulan & Tahun
+                </span>
+              )}
+            </div>
           </div>
 
           <select
@@ -436,4 +470,3 @@ export default function VisitList() {
     </div>
   );
 }
-

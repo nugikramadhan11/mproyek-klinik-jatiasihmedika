@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileBarChart, FileSpreadsheet, FileText, Filter, Calendar, Sparkles } from 'lucide-react';
+import { FileBarChart, FileSpreadsheet, FileText, Filter, Calendar, Sparkles, AlertTriangle, X, CalendarSearch } from 'lucide-react';
 import { exportToExcel, exportToPDF } from '../utils/exportUtils';
 
 export default function Reports() {
@@ -8,9 +8,22 @@ export default function Reports() {
   const [penjaminFilter, setPenjaminFilter] = useState('');
 
   const [data, setData] = useState({ summary: {}, detail: [] });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  // Toast warning state
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 30000);
+  };
 
   const fetchReportData = async () => {
+    // Hanya fetch jika periode sudah dipilih
+    if (!startDate || !endDate) {
+      setData({ summary: {}, detail: [] });
+      return;
+    }
     setLoading(true);
     try {
       const query = new URLSearchParams({
@@ -64,16 +77,24 @@ export default function Reports() {
   };
 
   const handleExportExcel = () => {
+    if (!startDate || !endDate) {
+      showToast('Harap Pilih Periode Dulu');
+      return;
+    }
     if (!detail || detail.length === 0) {
-      alert('Tidak ada data kunjungan untuk periode filter ini.');
+      showToast('Tidak ada data kunjungan untuk periode filter ini.');
       return;
     }
     exportToExcel(detail, summary, filterInfo);
   };
 
   const handleExportPDF = async () => {
+    if (!startDate || !endDate) {
+      showToast('Harap Pilih Periode Dulu');
+      return;
+    }
     if (!detail || detail.length === 0) {
-      alert('Tidak ada data kunjungan untuk periode filter ini.');
+      showToast('Tidak ada data kunjungan untuk periode filter ini.');
       return;
     }
     await exportToPDF(detail, summary, filterInfo);
@@ -81,6 +102,51 @@ export default function Reports() {
 
   return (
     <div className="space-y-6">
+
+      {/* Toast Warning Popup - Centered Modal */}
+      {toast && (
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => setToast(null)}
+        >
+          {/* Backdrop */}
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(4px)' }} />
+
+          {/* Popup Card */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              animation: 'popupScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            }}
+            className="bg-white rounded-3xl shadow-2xl border border-rose-100 p-8 w-full max-w-sm mx-4 text-center"
+          >
+            {/* Icon */}
+            <div className="w-16 h-16 rounded-2xl bg-rose-100 flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-8 h-8 text-rose-600" />
+            </div>
+
+            {/* Text */}
+            <h3 className="font-black text-slate-800 text-lg leading-tight mb-2">{toast.message}</h3>
+            <p className="text-slate-500 text-sm font-medium mb-6">Silakan pilih <span className="font-bold text-slate-700">Tanggal Awal</span> dan <span className="font-bold text-slate-700">Tanggal Akhir</span> terlebih dahulu sebelum mengekspor.</p>
+
+            {/* Button */}
+            <button
+              onClick={() => setToast(null)}
+              className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl text-sm transition-all active:scale-95"
+            >
+              Mengerti
+            </button>
+          </div>
+
+          <style>{`
+            @keyframes popupScaleIn {
+              from { opacity: 0; transform: scale(0.85); }
+              to   { opacity: 1; transform: scale(1); }
+            }
+          `}</style>
+        </div>
+      )}
       
       {/* Header & Export Actions */}
       <div className="bg-white p-6 rounded-3xl border border-sky-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -129,20 +195,7 @@ export default function Reports() {
             </div>
             <span>Filter Tanggal & Penjamin</span>
           </h3>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={setTodayFilter}
-              className="text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-xl border border-sky-100 hover:bg-sky-100 transition"
-            >
-              Hari Ini
-            </button>
-            <button
-              onClick={setMonthFilter}
-              className="text-xs font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-xl border border-sky-100 hover:bg-sky-100 transition"
-            >
-              Bulan Ini
-            </button>
-          </div>
+
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -186,117 +239,147 @@ export default function Reports() {
         </div>
       </div>
 
-      {/* Summary Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        
-        {/* Total Kunjungan */}
-        <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Total Kunjungan</p>
-          <h3 className="text-3xl font-black text-slate-800 mt-1 tracking-tight">{summary.totalKunjungan || 0}</h3>
-          <p className="text-xs text-sky-700 font-semibold mt-1">Pasien Baru: {summary.statusCounts?.Baru || 0} &bull; Lama: {summary.statusCounts?.Lama || 0}</p>
-        </div>
-
-        {/* Penjamin Breakdown */}
-        <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Penjamin</p>
-          <div className="flex justify-between items-baseline mt-1">
-            <div>
-              <span className="text-2xl font-black text-indigo-600">{summary.penjaminCounts?.['BPJS/JKN'] || 0}</span>
-              <span className="text-xs font-bold text-slate-500 block">BPJS / JKN</span>
-            </div>
-            <div>
-              <span className="text-2xl font-black text-emerald-600">{summary.penjaminCounts?.Umum || 0}</span>
-              <span className="text-xs font-bold text-slate-500 block">Umum</span>
-            </div>
+      {/* Kondisi: Periode Belum Dipilih → Empty State */}
+      {!startDate || !endDate ? (
+        <div className="bg-white rounded-3xl border border-sky-100 shadow-sm py-20 flex flex-col items-center justify-center text-center px-6">
+          <div className="w-20 h-20 rounded-3xl bg-sky-50 border border-sky-100 flex items-center justify-center mb-5">
+            <CalendarSearch className="w-10 h-10 text-sky-400" />
           </div>
-        </div>
+          <h3 className="font-black text-slate-700 text-lg mb-2">Pilih Periode Terlebih Dahulu</h3>
+          <p className="text-slate-400 text-sm font-medium max-w-sm">
+            Data <span className="font-bold text-slate-600">Total Kunjungan</span>, <span className="font-bold text-slate-600">Penjamin</span>, dan <span className="font-bold text-slate-600">Gender</span> akan tampil setelah kamu memilih Tanggal Awal dan Tanggal Akhir di atas.
+          </p>
 
-        {/* Gender Breakdown (REQ-07) */}
-        <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Gender</p>
-          <div className="flex justify-between items-baseline mt-1">
-            <div>
-              <span className="text-2xl font-black text-sky-600">{summary.genderCounts?.L || 0}</span>
-              <span className="text-xs font-bold text-slate-500 block">Laki-Laki (L)</span>
+        </div>
+      ) : (
+        <>
+          {/* Summary Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+
+            {/* Total Kunjungan */}
+            <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
+              <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Total Kunjungan</p>
+              {loading ? (
+                <div className="h-9 w-16 bg-slate-100 rounded-xl animate-pulse mt-1" />
+              ) : (
+                <>
+                  <h3 className="text-3xl font-black text-slate-800 mt-1 tracking-tight">{summary.totalKunjungan || 0}</h3>
+                  <p className="text-xs text-sky-700 font-semibold mt-1">Pasien Baru: {summary.statusCounts?.Baru || 0} &bull; Lama: {summary.statusCounts?.Lama || 0}</p>
+                </>
+              )}
             </div>
-            <div>
-              <span className="text-2xl font-black text-rose-500">{summary.genderCounts?.P || 0}</span>
-              <span className="text-xs font-bold text-slate-500 block">Perempuan (P)</span>
+
+            {/* Penjamin Breakdown */}
+            <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
+              <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Penjamin</p>
+              {loading ? (
+                <div className="h-9 w-24 bg-slate-100 rounded-xl animate-pulse mt-1" />
+              ) : (
+                <div className="flex justify-between items-baseline mt-1">
+                  <div>
+                    <span className="text-2xl font-black text-indigo-600">{summary.penjaminCounts?.['BPJS/JKN'] || 0}</span>
+                    <span className="text-xs font-bold text-slate-500 block">BPJS / JKN</span>
+                  </div>
+                  <div>
+                    <span className="text-2xl font-black text-emerald-600">{summary.penjaminCounts?.Umum || 0}</span>
+                    <span className="text-xs font-bold text-slate-500 block">Umum</span>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Gender Breakdown */}
+            <div className="bg-white p-5 rounded-3xl border border-sky-100 shadow-sm hover:shadow-md transition-all duration-200">
+              <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Gender</p>
+              {loading ? (
+                <div className="h-9 w-24 bg-slate-100 rounded-xl animate-pulse mt-1" />
+              ) : (
+                <div className="flex justify-between items-baseline mt-1">
+                  <div>
+                    <span className="text-2xl font-black text-sky-600">{summary.genderCounts?.L || 0}</span>
+                    <span className="text-xs font-bold text-slate-500 block">Laki-Laki (L)</span>
+                  </div>
+                  <div>
+                    <span className="text-2xl font-black text-rose-500">{summary.genderCounts?.P || 0}</span>
+                    <span className="text-xs font-bold text-slate-500 block">Perempuan (P)</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
-        </div>
 
-      </div>
+          {/* Tabel Detail Rekapitulasi */}
+          <div className="bg-white rounded-3xl border border-sky-100 shadow-sm overflow-hidden space-y-3">
+            <div className="p-5 border-b border-sky-100/70 flex items-center justify-between">
+              <h3 className="font-extrabold text-slate-800 text-sm">Tabel Rincian Rekapitulasi Kunjungan</h3>
+              <span className="text-xs text-sky-600 font-medium">Diurutkan berdasar tanggal terbaru</span>
+            </div>
 
-      {/* Tabel Detail Rekapitulasi */}
-      <div className="bg-white rounded-3xl border border-sky-100 shadow-sm overflow-hidden space-y-3">
-        <div className="p-5 border-b border-sky-100/70 flex items-center justify-between">
-          <h3 className="font-extrabold text-slate-800 text-sm">Tabel Rincian Rekapitulasi Kunjungan</h3>
-          <span className="text-xs text-sky-600 font-medium">Diurutkan berdasar tanggal terbaru</span>
-        </div>
-
-        {loading ? (
-          <div className="p-12 text-center text-sky-600 font-semibold animate-pulse">Memuat rekapitulasi...</div>
-        ) : detail.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 font-medium">Tidak ada data untuk periode filter ini.</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-sky-50/80 border-b border-sky-100 text-sky-900 font-extrabold uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-4 text-center">No</th>
-                  <th className="px-4 py-4 text-center">No. Reg / Tgl</th>
-                  <th className="px-4 py-4 text-left">Nama Pasien</th>
-                  <th className="px-4 py-4 text-center">Status</th>
-                  <th className="px-4 py-4 text-center">Gender</th>
-                  <th className="px-4 py-4 text-center">Usia & Kategori</th>
-                  <th className="px-4 py-4 text-left">Poli / Dokter</th>
-                  <th className="px-4 py-4 text-center">Penjamin</th>
-                  <th className="px-4 py-4 text-left">Tindakan Medis</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-sky-50">
-                {detail.map((item, idx) => (
-                  <tr key={item.id} className="hover:bg-sky-50/60 transition-colors duration-150">
-                    <td className="px-4 py-3.5 font-bold text-slate-400 text-center">{idx + 1}</td>
-                    <td className="px-4 py-3.5 font-mono text-center">
-                      <span className="font-bold text-slate-800">{item.no_registrasi}</span>
-                      <p className="text-slate-400 text-[11px]">{item.tanggal_kunjungan}</p>
-                    </td>
-                    <td className="px-4 py-3.5 font-extrabold text-sky-700 text-left whitespace-nowrap">{item.nama_pasien}</td>
-                    <td className="px-4 py-3.5 whitespace-nowrap text-center">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-extrabold whitespace-nowrap shadow-xs ${
-                        item.status_pasien === 'Baru' ? 'bg-sky-100 text-sky-800 border border-sky-200' : 'bg-indigo-100 text-indigo-800 border border-indigo-200'
-                      }`}>
-                        Pasien {item.status_pasien}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 font-bold whitespace-nowrap text-center">
-                      {item.jenis_kelamin === 'L' ? <span className="text-sky-600">Laki-Laki</span> : <span className="text-rose-500">Perempuan</span>}
-                    </td>
-                    <td className="px-4 py-3.5 whitespace-nowrap text-center">
-                      <span className="font-bold text-slate-700">{item.usia} th</span>
-                      <p className="text-slate-400 text-[11px]">{item.rentang_usia}</p>
-                    </td>
-                    <td className="px-4 py-3.5 min-w-[140px] text-left">
-                      <span className="font-bold text-slate-800">{item.nama_poli}</span>
-                      <p className="text-slate-400 text-[11px]">{item.nama_dokter}</p>
-                    </td>
-                    <td className="px-4 py-3.5 font-extrabold whitespace-nowrap text-center">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-extrabold whitespace-nowrap ${
-                        item.penjamin === 'BPJS/JKN' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-slate-100 text-slate-700 border border-slate-200'
-                      }`}>
-                        {item.penjamin}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 text-slate-600 text-left">{item.tindakan || '-'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {loading ? (
+              <div className="p-12 text-center text-sky-600 font-semibold animate-pulse">Memuat rekapitulasi...</div>
+            ) : detail.length === 0 ? (
+              <div className="p-12 text-center text-slate-400 font-medium">Tidak ada data untuk periode filter ini.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-sky-50/80 border-b border-sky-100 text-sky-900 font-extrabold uppercase tracking-wider">
+                    <tr>
+                      <th className="px-4 py-4 text-center">No</th>
+                      <th className="px-4 py-4 text-center">No. Reg / Tgl</th>
+                      <th className="px-4 py-4 text-left">Nama Pasien</th>
+                      <th className="px-4 py-4 text-center">Status</th>
+                      <th className="px-4 py-4 text-center">Gender</th>
+                      <th className="px-4 py-4 text-center">Usia & Kategori</th>
+                      <th className="px-4 py-4 text-left">Poli / Dokter</th>
+                      <th className="px-4 py-4 text-center">Penjamin</th>
+                      <th className="px-4 py-4 text-left">Tindakan Medis</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-sky-50">
+                    {detail.map((item, idx) => (
+                      <tr key={item.id} className="hover:bg-sky-50/60 transition-colors duration-150">
+                        <td className="px-4 py-3.5 font-bold text-slate-400 text-center">{idx + 1}</td>
+                        <td className="px-4 py-3.5 font-mono text-center">
+                          <span className="font-bold text-slate-800">{item.no_registrasi}</span>
+                          <p className="text-slate-400 text-[11px]">{item.tanggal_kunjungan}</p>
+                        </td>
+                        <td className="px-4 py-3.5 font-extrabold text-sky-700 text-left whitespace-nowrap">{item.nama_pasien}</td>
+                        <td className="px-4 py-3.5 whitespace-nowrap text-center">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-extrabold whitespace-nowrap shadow-xs ${
+                            item.status_pasien === 'Baru' ? 'bg-sky-100 text-sky-800 border border-sky-200' : 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                          }`}>
+                            Pasien {item.status_pasien}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3.5 font-bold whitespace-nowrap text-center">
+                          {item.jenis_kelamin === 'L' ? <span className="text-sky-600">Laki-Laki</span> : <span className="text-rose-500">Perempuan</span>}
+                        </td>
+                        <td className="px-4 py-3.5 whitespace-nowrap text-center">
+                          <span className="font-bold text-slate-700">{item.usia} th</span>
+                          <p className="text-slate-400 text-[11px]">{item.rentang_usia}</p>
+                        </td>
+                        <td className="px-4 py-3.5 min-w-[140px] text-left">
+                          <span className="font-bold text-slate-800">{item.nama_poli}</span>
+                          <p className="text-slate-400 text-[11px]">{item.nama_dokter}</p>
+                        </td>
+                        <td className="px-4 py-3.5 font-extrabold whitespace-nowrap text-center">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-lg text-[11px] font-extrabold whitespace-nowrap ${
+                            item.penjamin === 'BPJS/JKN' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}>
+                            {item.penjamin}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3.5 text-slate-600 text-left">{item.tindakan || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
     </div>
   );
